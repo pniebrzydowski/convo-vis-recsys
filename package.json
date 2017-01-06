@@ -1,0 +1,40 @@
+{
+  "name": "convo-vis-recsys",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/client/app/index.js",
+  "scripts": {
+    "build": "webpack",
+	"buildp": "webpack -p",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pniebrzydowski/convo-vis-recsys.git"
+  },
+  "author": "Patrick Niebrzydowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pniebrzydowski/convo-vis-recsys/issues"
+  },
+  "homepage": "https://github.com/pniebrzydowski/convo-vis-recsys#readme",
+  "babel": {
+    "presets": [
+      "react",
+      "es2015",
+	  "env"
+    ]
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-preset-env": "^1.1.6",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "webpack": "^2.2.0-rc.3"
+  }
+}

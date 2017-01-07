@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import QueryForm from './components/query-form.js';
 
 var foursquare = require('react-native-foursquare-api')({
   clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
@@ -30,3 +31,8 @@ foursquare.venues.explore(params)
   .catch(function(err){
 	console.log(err);
 });
+
+ReactDOM.render(
+  <QueryForm />,
+  document.getElementById('query-form')
+);

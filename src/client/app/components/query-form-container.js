@@ -80,7 +80,7 @@ class QueryFormContainer extends React.Component {
           title="Near"
           name="location"
           onChange={this.handleLocChange}
-          placeholder="e.g., casual"
+          placeholder="e.g., New York, NY"
           onChange={this.handleLocChange}
         />
         <button type="submit">Search</button>

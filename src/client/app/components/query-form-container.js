@@ -581,7 +581,7 @@ class QueryFormContainer extends React.Component {
         
     function draw(words) {
       console.log(words);
-      d3.select("body").append("svg")
+      d3.select("#chart-word-cloud")
           .attr("width", layout.size()[0])
           .attr("height", layout.size()[1])
           .append("g")

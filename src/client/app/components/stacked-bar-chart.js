@@ -165,7 +165,7 @@ class StackedBarChart extends React.Component {
       return b.venueScore - a.venueScore;
     });
     
-    return self.venues.slice(0,10);
+    return self.venues.slice(0,10).reverse();
   }
 	
 	handleQueryChange(event) {

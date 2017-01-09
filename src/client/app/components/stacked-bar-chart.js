@@ -64,12 +64,13 @@ class StackedBarChart extends React.Component {
     for(let i=0; i<venues.length; i++) {
       let found = false;
       let dataObj = {
+        id: venues[i].venue.id,
         name: venues[i].venue.name,
         venueScore: 0
       };
       
       for(let j=0; j<self.venues.length; j++) {
-        if(self.venues[j].name === venues[i].venue.name) {
+        if(self.venues[j].id === venues[i].venue.id) {
           dataObj = self.venues[j];
           found = true;
           break;

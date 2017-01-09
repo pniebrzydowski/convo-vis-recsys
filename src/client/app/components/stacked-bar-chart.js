@@ -60,48 +60,69 @@ class StackedBarChart extends React.Component {
 	
 	setVenueRankings(venues, newQuery) {
 		var self = this;
-		
-    let venueArray = [];
-    let seriesArray = [];
-    
+		    
     for(let i=0; i<venues.length; i++) {
       let found = false;
-      let dataObj = {};
+      let dataObj = {
+        name: venues[i].venue.name,
+        venueScore: 0
+      };
+      
       for(let j=0; j<self.venues.length; j++) {
         if(self.venues[j].name === venues[i].venue.name) {
           dataObj = self.venues[j];
           found = true;
+          break;
         }
       }
+      
+      dataObj[newQuery] = 30-i;
+      dataObj["venueScore"] += dataObj[newQuery];
 
       if(!found) {
-        dataObj["name"] = venues[i].venue.name;
-        for(let k=0; k<self.queries.length; k++) {
-          dataObj[self.queries[k]] = 0;
+        self.venues.push(dataObj);
+      }
+    }
+    
+    self.queries.push(newQuery);
+    for(let i=0; i<self.venues.length; i++) {
+      for(let j=0; j<self.queries.length; j++) {
+        if(self.venues[i][self.queries[j]] === undefined) {
+          self.venues[i][self.queries[j]] = 0;
         }
       }
-      dataObj[newQuery] = i+1;
-      venueArray.push(dataObj);
-    };
+    }
     
-    let topTenVenues = venueArray.slice(0,10);
-    self.queries.push(newQuery);
-
+    this.setState({
+      chartSeries: self.getSeriesArray(),
+      chartData: self.getTopVenues()
+    });
+    console.log(this.state.chartSeries);
+    console.log(this.state.chartData);
+	}
+  
+  getSeriesArray() {
+    var self = this;
+    
+    let seriesArray = [];
     for(let i=0; i<self.queries.length; i++) {
       seriesArray.push({
         field: self.queries[i],
         name: self.queries[i]
       });
     }
+    return seriesArray;
+  }
+  
+  getTopVenues() {
+    var self = this;
     
-    self.venues = venueArray;
-    this.setState({
-      chartSeries: seriesArray,
-      chartData: topTenVenues
+    self.venues.sort(function(a,b) {
+      return b.venueScore - a.venueScore;
     });
-    console.log(this.state.chartSeries);
-    console.log(this.state.chartData);
-	}
+    
+    return self.venues.slice(0,10);
+  }
 	
 	handleQueryChange(event) {
 		this.setState({query: event.target.value});

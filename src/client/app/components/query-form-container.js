@@ -581,6 +581,7 @@ class QueryFormContainer extends React.Component {
         
     function draw(words) {
       console.log(words);
+      d3.select("#chart-word-cloud").selectAll("*").remove();
       d3.select("#chart-word-cloud")
           .attr("width", layout.size()[0])
           .attr("height", layout.size()[1])

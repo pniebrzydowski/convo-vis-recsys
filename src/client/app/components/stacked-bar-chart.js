@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
+import {BarStackHorizontalChart} from 'react-d3-basic';
 import SingleInput from './single-input.js';
-var BarStackHorizontalChart = require('react-d3-basic').BarStackHorizontalChart;
 
 class StackedBarChart extends React.Component {
 	constructor(props) {

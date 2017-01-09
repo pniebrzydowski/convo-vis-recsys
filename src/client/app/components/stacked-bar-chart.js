@@ -10,15 +10,17 @@ class StackedBarChart extends React.Component {
     this.state = {
       WIDTH: 700,
       HEIGHT: 500,
+      xDomain: [],
       chartSeries: [],
       chartData: [],
       query: null,
       loc: null
 		}
-    this.xTickFormat = d3.format(".2s");
+    this.xTickFormat = d3.format(".2");
     this.yScale = 'ordinal';
     this.queries = [];
     this.venues = [];
+    this.MAX_RANK = 30;
 		
 		this.handleSubmit = this.handleSubmit.bind(this);
     this.handleQueryChange = this.handleQueryChange.bind(this);
@@ -63,13 +65,14 @@ class StackedBarChart extends React.Component {
 	
 	setVenueRankings(venues, newQuery) {
 		var self = this;
-		    
+    		    
     for(let i=0; i<venues.length; i++) {
       let found = false;
       let dataObj = {
         id: venues[i].venue.id,
         name: venues[i].venue.name,
-        venueScore: 0
+        venueScore: 0,
+        queryScores: []
       };
       
       for(let j=0; j<self.venues.length; j++) {
@@ -80,26 +83,46 @@ class StackedBarChart extends React.Component {
         }
       }
       
-      dataObj[newQuery] = 30-i;
-      dataObj["venueScore"] += dataObj[newQuery];
+      dataObj.queryScores[newQuery] = self.MAX_RANK - i;
 
       if(!found) {
         self.venues.push(dataObj);
       }
     }
     
-    self.queries.push(newQuery);
+    let queryCt = self.queries.length;
+    for(let i=0; i<queryCt; i++) {
+      let wt = self.queries[i].weight;
+      let newWt = (wt * queryCt)/(queryCt + 1);
+      self.queries[i].weight = newWt;
+    }
+      
+    self.queries.push({
+      name: newQuery,
+      weight: 1 / (queryCt + 1)
+    });
+    
     for(let i=0; i<self.venues.length; i++) {
+      let venueScore = 0;
       for(let j=0; j<self.queries.length; j++) {
-        if(self.venues[i][self.queries[j]] === undefined) {
-          self.venues[i][self.queries[j]] = 0;
+        if(self.venues[i].queryScores[self.queries[j].name] === undefined) {
+          self.venues[i].queryScores[self.queries[j].name] = 0;
+          self.venues[i][self.queries[j].name] = 0;
+        } else {
+          let queryScore = self.venues[i].queryScores[self.queries[j].name];
+          let queryWt = self.queries[j].weight;
+          let wtdScore = (queryScore * queryWt) / self.MAX_RANK;
+          self.venues[i][self.queries[j].name] = wtdScore;
+          venueScore += wtdScore;
         }
       }
+      self.venues[i].venueScore = venueScore;
     }
     
     this.setState({
       chartSeries: self.getSeriesArray(),
-      chartData: self.getTopVenues()
+      chartData: self.getTopVenues(),
+      xDomain: [0,1]
     });
     console.log(this.state.chartSeries);
     console.log(this.state.chartData);
@@ -111,8 +134,8 @@ class StackedBarChart extends React.Component {
     let seriesArray = [];
     for(let i=0; i<self.queries.length; i++) {
       seriesArray.push({
-        field: self.queries[i],
-        name: self.queries[i]
+        field: self.queries[i].name,
+        name: self.queries[i].name
       });
     }
     return seriesArray;
@@ -164,6 +187,7 @@ class StackedBarChart extends React.Component {
           height= {this.state.HEIGHT}
           chartSeries = {this.state.chartSeries}
           x= {this.x}
+          xDomain= {this.state.xDomain}
           xTickFormat= {this.xTickFormat}
           y= {this.y}
           yScale = {this.yScale}

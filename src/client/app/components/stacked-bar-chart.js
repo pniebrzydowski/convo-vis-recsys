@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import SingleInput from './single-input.js';
-var BarStackChart = require('react-d3-basic').BarStackChart;
+var BarStackHorizontalChart = require('react-d3-basic').BarStackHorizontalChart;
 
 class StackedBarChart extends React.Component {
 	constructor(props) {
@@ -15,8 +15,8 @@ class StackedBarChart extends React.Component {
       query: null,
       loc: null
 		}
-    this.xScale = 'ordinal';
-    this.yTickFormat = d3.format(".2s");
+    this.xTickFormat = d3.format(".2s");
+    this.yScale = 'ordinal';
     this.queries = [];
     this.venues = [];
 		
@@ -33,6 +33,9 @@ class StackedBarChart extends React.Component {
   }
   
   x(d) {
+    return +d;
+  }
+  y(d) {
     return d.name;
   }
 	
@@ -155,14 +158,16 @@ class StackedBarChart extends React.Component {
           
         </form>
       
-        <BarStackChart
+        <BarStackHorizontalChart
           data= {this.state.chartData}
           width= {this.state.WIDTH}
           height= {this.state.HEIGHT}
           chartSeries = {this.state.chartSeries}
           x= {this.x}
-          xScale = {this.xScale}
-          yTickFormat= {this.yTickFormat}
+          xTickFormat= {this.xTickFormat}
+          y= {this.y}
+          yScale = {this.yScale}
+          horizontal= {true}
         />
       </div>
  		);

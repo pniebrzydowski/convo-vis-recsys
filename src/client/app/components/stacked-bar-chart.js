@@ -2,6 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 import {BarStackHorizontalChart} from 'react-d3-basic';
 import SingleInput from './single-input.js';
+import InputList from './input-list.js';
 
 class StackedBarChart extends React.Component {
 	constructor(props) {
@@ -13,6 +14,7 @@ class StackedBarChart extends React.Component {
       xDomain: [],
       chartSeries: [],
       chartData: [],
+      queries: [],
       query: null,
       loc: null
 		}
@@ -25,6 +27,8 @@ class StackedBarChart extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
     this.handleQueryChange = this.handleQueryChange.bind(this);
     this.handleLocChange = this.handleLocChange.bind(this);
+    this.handleWeightChange = this.handleWeightChange.bind(this);
+    this.handleWeightSubmit = this.handleWeightSubmit.bind(this);
     
 		this.foursquare = require('react-native-foursquare-api')({
 		  clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
@@ -92,14 +96,14 @@ class StackedBarChart extends React.Component {
     
     let queryCt = self.queries.length;
     for(let i=0; i<queryCt; i++) {
-      let wt = self.queries[i].weight;
+      let wt = self.queries[i].value;
       let newWt = (wt * queryCt)/(queryCt + 1);
-      self.queries[i].weight = newWt;
+      self.queries[i].value = newWt;
     }
       
     self.queries.push({
       name: newQuery,
-      weight: 1 / (queryCt + 1)
+      value: 1 / (queryCt + 1)
     });
     
     for(let i=0; i<self.venues.length; i++) {
@@ -110,7 +114,7 @@ class StackedBarChart extends React.Component {
           self.venues[i][self.queries[j].name] = 0;
         } else {
           let queryScore = self.venues[i].queryScores[self.queries[j].name];
-          let queryWt = self.queries[j].weight;
+          let queryWt = self.queries[j].value;
           let wtdScore = (queryScore * queryWt) / self.MAX_RANK;
           self.venues[i][self.queries[j].name] = wtdScore;
           venueScore += wtdScore;
@@ -122,7 +126,8 @@ class StackedBarChart extends React.Component {
     this.setState({
       chartSeries: self.getSeriesArray(),
       chartData: self.getTopVenues(),
-      xDomain: [0,1]
+      xDomain: [0,1],
+      queries: self.queries
     });
     console.log(this.state.chartSeries);
     console.log(this.state.chartData);
@@ -157,6 +162,22 @@ class StackedBarChart extends React.Component {
   handleLocChange(event) {
     this.setState({loc: event.target.value});
   }
+  handleWeightChange(event) {
+    var self = this;
+    for(let i=0; i<self.queries.length; i++) {
+      if(self.queries[i].name === event.target.name) {
+        self.queries[i].value = event.target.value;
+        self.setState({queries: self.queries});
+        return;
+      }
+    }
+  }
+  handleWeightSubmit(event) {
+    var self = this;
+    event.preventDefault();
+    
+    console.log(self.state.queries);
+  }
 		
 	render() {
 		return (
@@ -178,9 +199,15 @@ class StackedBarChart extends React.Component {
             onChange={this.handleLocChange}
           />
           <button type="submit">Search</button>
-          
         </form>
-      
+        
+        <form onSubmit={this.handleWeightSubmit}>
+          <InputList
+            fields={this.queries}
+            onChange={this.handleWeightChange}
+          />
+        </form>
+        
         <BarStackHorizontalChart
           data= {this.state.chartData}
           width= {this.state.WIDTH}

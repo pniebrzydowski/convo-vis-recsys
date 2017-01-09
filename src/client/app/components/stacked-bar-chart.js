@@ -26,6 +26,7 @@ class StackedBarChart extends React.Component {
 		
 		this.handleSubmit = this.handleSubmit.bind(this);
     this.handleQueryChange = this.handleQueryChange.bind(this);
+    this.handleQueryRemove = this.handleQueryRemove.bind(this);
     this.handleLocChange = this.handleLocChange.bind(this);
     this.handleWeightChange = this.handleWeightChange.bind(this);
     this.handleWeightSubmit = this.handleWeightSubmit.bind(this);
@@ -97,7 +98,7 @@ class StackedBarChart extends React.Component {
     let queryCt = self.queries.length;
     for(let i=0; i<queryCt; i++) {
       let wt = self.queries[i].value;
-      let newWt = (wt * queryCt)/(queryCt + 1);
+      let newWt = Math.floor((wt * queryCt)/(queryCt + 1));
       self.queries[i].value = newWt;
     }
       
@@ -114,7 +115,7 @@ class StackedBarChart extends React.Component {
   drawChart() {
     var self = this;
     
-    self.adjustWeighting();
+    self.adjustVenueWeighting();
     self.setState({
       chartSeries: self.getSeriesArray(),
       chartData: self.getTopVenues(),
@@ -122,9 +123,23 @@ class StackedBarChart extends React.Component {
       queries: self.queries
     });
   }
-
   
-  adjustWeighting() {
+  adjustQueryWeighting() {
+    var self = this;
+    
+    let totalWeight = 0;
+    for(let i=0; i<self.queries.length; i++) {
+      totalWeight += self.queries[i].value;
+    }
+    
+    for(let i=0; i<self.queries.length; i++) {
+      let wt = self.queries[i].value;
+      let newWt = Math.floor((100 * wt) / totalWeight);
+      self.queries[i].value = newWt;
+    }
+  }
+  
+  adjustVenueWeighting() {
     var self = this;
     
     for(let i=0; i<self.venues.length; i++) {
@@ -184,6 +199,22 @@ class StackedBarChart extends React.Component {
       }
     }
   }
+  handleQueryRemove(event) {
+    var self = this;
+    
+    let idx = -1;
+    for(let i=0; i<self.queries.length; i++) {
+      if(self.queries[i].name === event.target.name) {
+        idx = i;
+        break;
+      }
+    }
+    if(idx > -1) {
+      self.queries.splice(idx, 1);
+      self.adjustQueryWeighting();
+      self.drawChart();
+    }
+  }
   handleWeightSubmit(event) {
     var self = this;
     event.preventDefault();
@@ -216,6 +247,7 @@ class StackedBarChart extends React.Component {
           <InputList
             fields={this.queries}
             onChange={this.handleWeightChange}
+            removeFunc={this.handleQueryRemove}
           />
           <button type="submit">Save</button>
         </form>

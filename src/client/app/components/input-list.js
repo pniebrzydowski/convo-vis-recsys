@@ -11,6 +11,10 @@ const InputList = (props) => (
             type="text"
             value={field.value}
             onChange={props.onChange}/>
+          <a
+            name={field.name}
+            onClick={props.removeFunc}>Remove
+          </a>
         </li>
       );
     })}

@@ -18,7 +18,7 @@ class StackedBarChart extends React.Component {
       query: null,
       loc: null
 		}
-    this.xTickFormat = d3.format(".2");
+    this.xTickFormat = d3.format(".3");
     this.yScale = 'ordinal';
     this.queries = [];
     this.venues = [];
@@ -103,8 +103,29 @@ class StackedBarChart extends React.Component {
       
     self.queries.push({
       name: newQuery,
-      value: 1 / (queryCt + 1)
+      value: Math.floor( 100 / (queryCt + 1))
     });
+    
+    self.drawChart();
+    console.log(this.state.chartSeries);
+    console.log(this.state.chartData);
+	}
+  
+  drawChart() {
+    var self = this;
+    
+    self.adjustWeighting();
+    self.setState({
+      chartSeries: self.getSeriesArray(),
+      chartData: self.getTopVenues(),
+      xDomain: [0,100],
+      queries: self.queries
+    });
+  }
+
+  
+  adjustWeighting() {
+    var self = this;
     
     for(let i=0; i<self.venues.length; i++) {
       let venueScore = 0;
@@ -115,24 +136,15 @@ class StackedBarChart extends React.Component {
         } else {
           let queryScore = self.venues[i].queryScores[self.queries[j].name];
           let queryWt = self.queries[j].value;
-          let wtdScore = (queryScore * queryWt) / self.MAX_RANK;
+          let wtdScore = Math.floor((queryScore * queryWt) / self.MAX_RANK);
           self.venues[i][self.queries[j].name] = wtdScore;
           venueScore += wtdScore;
         }
       }
       self.venues[i].venueScore = venueScore;
     }
+  }
     
-    this.setState({
-      chartSeries: self.getSeriesArray(),
-      chartData: self.getTopVenues(),
-      xDomain: [0,1],
-      queries: self.queries
-    });
-    console.log(this.state.chartSeries);
-    console.log(this.state.chartData);
-	}
-  
   getSeriesArray() {
     var self = this;
     
@@ -175,8 +187,7 @@ class StackedBarChart extends React.Component {
   handleWeightSubmit(event) {
     var self = this;
     event.preventDefault();
-    
-    console.log(self.state.queries);
+    self.drawChart();
   }
 		
 	render() {
@@ -206,6 +217,7 @@ class StackedBarChart extends React.Component {
             fields={this.queries}
             onChange={this.handleWeightChange}
           />
+          <button type="submit">Save</button>
         </form>
         
         <BarStackHorizontalChart

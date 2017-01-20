@@ -31,8 +31,7 @@ class StackedBarChart extends React.Component {
     this.handleQueryChange = this.handleQueryChange.bind(this);
     this.handleQueryRemove = this.handleQueryRemove.bind(this);
     this.handleLocChange = this.handleLocChange.bind(this);
-    //this.handleWeightChange = this.handleWeightChange.bind(this);
-    //this.handleWeightSubmit = this.handleWeightSubmit.bind(this);
+    this.handleWeightChange = this.handleWeightChange.bind(this);
     
 		this.foursquare = require('react-native-foursquare-api')({
 		  clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
@@ -197,18 +196,13 @@ class StackedBarChart extends React.Component {
   handleLocChange(event) {
     this.setState({loc: event.target.value});
   }
-	/*
-  handleWeightChange(event) {
-    var self = this;
-    for(let i=0; i<self.queries.length; i++) {
-      if(self.queries[i].name === event.target.name) {
-        self.queries[i].value = event.target.value;
-				self.queryWeights[i] = event.target.value;
-        self.setState({queryValues: self.queryWeights});
-        return;
-      }
-    }
-  }*/
+  handleWeightChange(values) {
+		var self = this;
+		
+		self.queryWeights = values;
+		self.setState({queryValues: values});
+		self.drawChart();
+  }
   handleQueryRemove(event) {
     var self = this;
     
@@ -226,12 +220,6 @@ class StackedBarChart extends React.Component {
       self.drawChart();
     }
   }
-	/*
-  handleWeightSubmit(event) {
-    var self = this;
-    event.preventDefault();
-    self.drawChart();
-  }*/
 		
 	render() {
 		return (
@@ -264,6 +252,7 @@ class StackedBarChart extends React.Component {
 					max={600}
 					step={this.state.numberOfQueries}
 					value={this.state.queryValues}
+					onAfterChange={this.handleWeightChange}
 				/>
 				
         <BarStackHorizontalChart

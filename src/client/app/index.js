@@ -7,12 +7,12 @@ class App extends React.Component {
   constructor(props) {
     super(props);
   }
+	/*<QueryFormContainer />
+	<svg id="chart-word-cloud"></svg>*/
   
   render() {
     return (
       <div>
-        <QueryFormContainer />
-        <svg id="chart-word-cloud"></svg>
         <StackedBarChart />
         <div id="chart-stacked-bar"></div>
       </div>

@@ -1,13 +1,13 @@
 <html>
 <head>
-	<title>Conversational Visual Recommender System</title>
+	<title>Interactive Decision Support Tool</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF8">
 	
 	<style>
 		.slider {
 				width: 100%;
-				max-width: 500px;
-				height: 50px;
+				max-width: 700px;
+				height: 32px;
 				border: 1px solid grey;
 		}
 		.handle {
@@ -24,11 +24,20 @@
 				position: relative;
 				background: #ddd;
 		}
+		.bar.bar-0 {
+			background: rgb(31, 119, 180);
+		}
 		.bar.bar-1 {
-				background: #f00;
+				background: rgb(255, 127, 14);
 		}
 		.bar.bar-2 {
-				background: #0f0;
+				background: rgb(44, 160, 44);
+		}
+		.bar.bar-3 {
+				background: rgb(214, 39, 40);
+		}
+		.bar.bar-4 {
+				background: rgb(148, 103, 189);
 		}
 		.slider .bar {
 				top: 20px;
@@ -36,15 +45,12 @@
 		}
 		.slider .handle {
 				top: 1px;
-				width: 50px;
-				height: 48px;
-				line-height: 48px;
+				width: 8px;
+				height: 30px;
+				line-height: 30px;
 		}
 		#horizontal-0,
 		#horizontal-1, #horizontal-2, #horizontal-3,
-		#vertical {
-				margin: 20px 10px;
-		}
 		#horizontal-2 .bar.bar-2 {
 				background: #ddd;
 		}

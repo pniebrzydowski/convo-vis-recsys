@@ -10,16 +10,16 @@ class StackedBarChart extends React.Component {
 		super(props);
     
     this.state = {
-      WIDTH: 700,
-      HEIGHT: 500,
-      xDomain: [],
       chartSeries: [],
       chartData: [],
-			numberOfQueries: 0,
+			sliderStepSize: 600,
 			queryValues: [],
       query: null,
       loc: null
 		}
+    this.WIDTH = 800;
+    this.HEIGHT = 500;
+    this.xDomain = [0,100];
     this.xTickFormat = d3.format(".3");
     this.yScale = 'ordinal';
     this.queries = [];
@@ -119,8 +119,7 @@ class StackedBarChart extends React.Component {
     self.setState({
       chartSeries: self.getSeriesArray(),
       chartData: self.getTopVenues(),
-      xDomain: [0,100],
-			numberOfQueries: self.queries.length,
+			sliderStepSize: 60 / self.queries.length,
 			queryValues: self.queryWeights
     });
 		
@@ -249,19 +248,22 @@ class StackedBarChart extends React.Component {
 
 				<ReactSlider
 					withBars
+					min={this.state.sliderStepSize*2}
 					max={600}
-					step={this.state.numberOfQueries}
+					minDistance={this.state.sliderStepSize*2}
+					step={this.state.sliderStepSize}
 					value={this.state.queryValues}
 					onAfterChange={this.handleWeightChange}
+					pearling={true}
 				/>
 				
         <BarStackHorizontalChart
           data= {this.state.chartData}
-          width= {this.state.WIDTH}
-          height= {this.state.HEIGHT}
+          width= {this.WIDTH}
+          height= {this.HEIGHT}
           chartSeries = {this.state.chartSeries}
           x= {this.x}
-          xDomain= {this.state.xDomain}
+          xDomain= {this.xDomain}
           xTickFormat= {this.xTickFormat}
           y= {this.y}
           yScale = {this.yScale}

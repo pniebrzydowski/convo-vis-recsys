@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import {BarStackHorizontalChart} from 'react-d3-basic';
 import ReactSlider from 'react-slider';
 import SingleInput from './single-input.js';
-import InputList from './input-list.js';
+import ValueList from './value-list.js';
 
 class StackedBarChart extends React.Component {
 	constructor(props) {
@@ -15,8 +15,8 @@ class StackedBarChart extends React.Component {
       xDomain: [],
       chartSeries: [],
       chartData: [],
-      queries: [],
-			queryWeights: [],
+			numberOfQueries: 0,
+			queryValues: [],
       query: null,
       loc: null
 		}
@@ -31,8 +31,8 @@ class StackedBarChart extends React.Component {
     this.handleQueryChange = this.handleQueryChange.bind(this);
     this.handleQueryRemove = this.handleQueryRemove.bind(this);
     this.handleLocChange = this.handleLocChange.bind(this);
-    this.handleWeightChange = this.handleWeightChange.bind(this);
-    this.handleWeightSubmit = this.handleWeightSubmit.bind(this);
+    //this.handleWeightChange = this.handleWeightChange.bind(this);
+    //this.handleWeightSubmit = this.handleWeightSubmit.bind(this);
     
 		this.foursquare = require('react-native-foursquare-api')({
 		  clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
@@ -99,20 +99,14 @@ class StackedBarChart extends React.Component {
     }
     
     let queryCt = self.queries.length;
-		let totalWt = 0;
     for(let i=0; i<queryCt; i++) {
-      let wt = self.queries[i].value;
-      let newWt = Math.round((wt * queryCt)/(queryCt + 1));
-      self.queries[i].value = newWt;
-			totalWt += newWt;
-			self.queryWeights[i] = totalWt*3;
+      let wt = self.queryWeights[i];
+      let newWt = ((wt * queryCt)/(queryCt + 1));
+			self.queryWeights[i] = newWt;
     }
     
-    self.queries.push({
-      name: newQuery,
-      value: Math.round( 100 / (queryCt + 1))
-    });
-		self.queryWeights.push( 300 );
+    self.queries.push( newQuery );
+		self.queryWeights.push( 600 );
     
     self.drawChart();
     console.log(this.state.chartSeries);
@@ -127,11 +121,11 @@ class StackedBarChart extends React.Component {
       chartSeries: self.getSeriesArray(),
       chartData: self.getTopVenues(),
       xDomain: [0,100],
-      queries: self.queries,
-			queryWeights: self.queryWeights
+			numberOfQueries: self.queries.length,
+			queryValues: self.queryWeights
     });
 		
-		console.log(self.state.queryWeights);
+		console.log(self.state.queryValues);
   }
   
   adjustQueryWeighting() {
@@ -145,10 +139,9 @@ class StackedBarChart extends React.Component {
 		let weightSum = 0;
     for(let i=0; i<self.queries.length; i++) {
       let wt = self.queries[i].value;
-      let newWt = Math.floor((100 * wt) / totalWeight);
-      self.queries[i].value = newWt;
+      let newWt = (600 * wt) / totalWeight;
 			weightSum += newWt;
-			self.queryWeights[i] = weightSum * 3;
+			self.queryWeights[i] = weightSum;
     }
   }
   
@@ -157,17 +150,19 @@ class StackedBarChart extends React.Component {
     
     for(let i=0; i<self.venues.length; i++) {
       let venueScore = 0;
+			let prevWt = 0;
       for(let j=0; j<self.queries.length; j++) {
-        if(self.venues[i].queryScores[self.queries[j].name] === undefined) {
-          self.venues[i].queryScores[self.queries[j].name] = 0;
-          self.venues[i][self.queries[j].name] = 0;
+        if(self.venues[i].queryScores[self.queries[j]] === undefined) {
+          self.venues[i].queryScores[self.queries[j]] = 0;
+          self.venues[i][self.queries[j]] = 0;
         } else {
-          let queryScore = self.venues[i].queryScores[self.queries[j].name];
-          let queryWt = self.queries[j].value;
-          let wtdScore = Math.floor((queryScore * queryWt) / self.MAX_RANK);
-          self.venues[i][self.queries[j].name] = wtdScore;
+          let queryScore = self.venues[i].queryScores[self.queries[j]];
+					let queryWt = self.queryWeights[j] - prevWt;
+          let wtdScore = (queryScore * queryWt) / self.MAX_RANK / 6;
+          self.venues[i][self.queries[j]] = wtdScore;
           venueScore += wtdScore;
         }
+				prevWt = self.queryWeights[j];
       }
       self.venues[i].venueScore = venueScore;
     }
@@ -179,8 +174,8 @@ class StackedBarChart extends React.Component {
     let seriesArray = [];
     for(let i=0; i<self.queries.length; i++) {
       seriesArray.push({
-        field: self.queries[i].name,
-        name: self.queries[i].name
+        field: self.queries[i],
+        name: self.queries[i]
       });
     }
     return seriesArray;
@@ -202,38 +197,41 @@ class StackedBarChart extends React.Component {
   handleLocChange(event) {
     this.setState({loc: event.target.value});
   }
+	/*
   handleWeightChange(event) {
     var self = this;
     for(let i=0; i<self.queries.length; i++) {
       if(self.queries[i].name === event.target.name) {
         self.queries[i].value = event.target.value;
 				self.queryWeights[i] = event.target.value;
-        self.setState({queries: self.queries, queryWeights: self.queryWeights});
+        self.setState({queryValues: self.queryWeights});
         return;
       }
     }
-  }
+  }*/
   handleQueryRemove(event) {
     var self = this;
     
     let idx = -1;
     for(let i=0; i<self.queries.length; i++) {
-      if(self.queries[i].name === event.target.name) {
+      if(self.queries[i] === event.target.name) {
         idx = i;
         break;
       }
     }
     if(idx > -1) {
       self.queries.splice(idx, 1);
+			self.queryWeights.splice(idx, 1);
       self.adjustQueryWeighting();
       self.drawChart();
     }
   }
+	/*
   handleWeightSubmit(event) {
     var self = this;
     event.preventDefault();
     self.drawChart();
-  }
+  }*/
 		
 	render() {
 		return (
@@ -257,19 +255,15 @@ class StackedBarChart extends React.Component {
           <button type="submit">Search</button>
         </form>
         
-				<form onSubmit={this.handleWeightSubmit}>
-          <InputList
-            fields={this.queries}
-            onChange={this.handleWeightChange}
-            removeFunc={this.handleQueryRemove}
-          />
-          <button type="submit">Save</button>
-        </form>
+				<ValueList
+          values={this.state.queryValues}
+        />
 
 				<ReactSlider
 					withBars
-					max={300}
-					value={this.state.queryWeights}
+					max={600}
+					step={this.state.numberOfQueries}
+					value={this.state.queryValues}
 				/>
 				
         <BarStackHorizontalChart

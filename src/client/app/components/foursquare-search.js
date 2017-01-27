@@ -1,6 +1,7 @@
 import React from 'react';
 import SingleInput from './single-input.js';
 import ValueList from './value-list.js';
+import StackedBarChart from './stacked-bar-chart.js';
 
 class FoursquareSearch extends React.Component {
 	constructor(props) {
@@ -8,7 +9,7 @@ class FoursquareSearch extends React.Component {
     
     this.state = {
 			queryValues: [],
-			lists: {},
+			lists: [],
       query: null,
       loc: null
 		}
@@ -51,10 +52,10 @@ class FoursquareSearch extends React.Component {
 	addVenue(venues, newQuery) {
 		var self = this;
 		
-		self.state.lists[newQuery] = {
-			query: newQuery.toLowerCase().replace(/ /g, ''),
+		self.state.lists.push({
+			query: newQuery,
 			list: venues
-		};
+		});
 		self.state.queryValues.push(newQuery);
 		self.setState(self.state);
 		console.log(self.state);
@@ -107,6 +108,10 @@ class FoursquareSearch extends React.Component {
 				<ValueList
           values={this.state.queryValues}
         />
+				
+				<StackedBarChart
+					lists={this.state.lists}
+				/>
       </div>
  		);
 	}

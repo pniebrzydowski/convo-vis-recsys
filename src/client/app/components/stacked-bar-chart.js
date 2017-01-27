@@ -2,8 +2,6 @@ import React from 'react';
 import * as d3 from 'd3';
 import {BarStackHorizontalChart} from 'react-d3-basic';
 import ReactSlider from 'react-slider';
-import SingleInput from './single-input.js';
-import ValueList from './value-list.js';
 
 class StackedBarChart extends React.Component {
 	constructor(props) {
@@ -13,9 +11,7 @@ class StackedBarChart extends React.Component {
       chartSeries: [],
       chartData: [],
 			sliderStepSize: 600,
-			queryValues: [],
-      query: null,
-      loc: null
+			queryValues: []
 		}
     this.WIDTH = 800;
     this.HEIGHT = 500;
@@ -27,18 +23,8 @@ class StackedBarChart extends React.Component {
     this.venues = [];
     this.MAX_RANK = 30;
 		
-		this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleQueryChange = this.handleQueryChange.bind(this);
-    this.handleQueryRemove = this.handleQueryRemove.bind(this);
-    this.handleLocChange = this.handleLocChange.bind(this);
     this.handleWeightChange = this.handleWeightChange.bind(this);
     
-		this.foursquare = require('react-native-foursquare-api')({
-		  clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
-		  clientSecret: 'UVG4K1IVCCUFJA3XW2XOZCSGSFPJ1UJ1RD42I0GGA4XDTEFB',
-		  style: 'foursquare', // default: 'foursquare' 
-		  version: '20160107' //  default: '20140806' 
-		});
   }
   
   x(d) {
@@ -48,28 +34,14 @@ class StackedBarChart extends React.Component {
     return d.name;
   }
 	
-	handleSubmit(event) {
+	componentWillReceiveProps(nextProps) {
+		if(this.queries.length === nextProps.lists.length) return;
 		var self = this;
-		event.preventDefault();
-    
-		console.log("query: " + self.state.query + " | loc: " + self.state.loc);
-		let params = {
-		  "near": self.state.loc,
-		  "query": self.state.query
-		};
-    
-    let newQuery = self.state.query;
 		
-		self.foursquare.venues.explore(params)
-		  .then(function(data) {
-				console.log(data);
-				self.setVenueRankings(data.response.groups[0].items, newQuery);
-			})
-		  .catch(function(err){
-        console.log(err);
-      });
+		let newList = nextProps.lists[nextProps.lists.length - 1];
+		self.setVenueRankings(newList.list, newList.query);
 	}
-	
+		
   setVenueRankings(venues, newQuery) {
 		var self = this;
     		    
@@ -108,8 +80,6 @@ class StackedBarChart extends React.Component {
 		self.queryWeights.push( 600 );
     
     self.drawChart();
-    console.log(this.state.chartSeries);
-    console.log(this.state.chartData);
   }
   
   drawChart() {
@@ -123,7 +93,7 @@ class StackedBarChart extends React.Component {
 			queryValues: self.queryWeights
     });
 		
-		console.log(self.state.queryValues);
+    console.log(self.state);
   }
   
   adjustQueryWeighting() {
@@ -189,12 +159,6 @@ class StackedBarChart extends React.Component {
     return self.venues.slice(0,10).reverse();
   }
 	
-	handleQueryChange(event) {
-		this.setState({query: event.target.value});
-	}
-  handleLocChange(event) {
-    this.setState({loc: event.target.value});
-  }
   handleWeightChange(values) {
 		var self = this;
 		
@@ -202,31 +166,10 @@ class StackedBarChart extends React.Component {
 		self.setState({queryValues: values});
 		self.drawChart();
   }
-  handleQueryRemove(event) {
-    var self = this;
-    
-    let idx = -1;
-    for(let i=0; i<self.queries.length; i++) {
-      if(self.queries[i] === event.target.name) {
-        idx = i;
-        break;
-      }
-    }
-    if(idx > -1) {
-      self.queries.splice(idx, 1);
-			self.queryWeights.splice(idx, 1);
-      self.adjustQueryWeighting();
-      self.drawChart();
-    }
-  }
 		
 	render() {
 		return (
-      <div>        
-				<ValueList
-          values={this.state.queryValues}
-        />
-
+      <div>
 				<ReactSlider
 					withBars
 					min={this.state.sliderStepSize*2}

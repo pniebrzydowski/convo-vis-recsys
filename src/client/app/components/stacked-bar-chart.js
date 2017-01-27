@@ -222,26 +222,7 @@ class StackedBarChart extends React.Component {
 		
 	render() {
 		return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <SingleInput
-            inputType="text"
-            title="Search for"
-            name="query"
-            placeholder="e.g., casual"
-            onChange={this.handleQueryChange}
-          />
-          <SingleInput
-            inputType="text"
-            title="Near"
-            name="location"
-            onChange={this.handleLocChange}
-            placeholder="e.g., New York, NY"
-            onChange={this.handleLocChange}
-          />
-          <button type="submit">Search</button>
-        </form>
-        
+      <div>        
 				<ValueList
           values={this.state.queryValues}
         />

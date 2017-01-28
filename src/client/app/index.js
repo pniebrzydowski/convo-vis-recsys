@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import QueryFormContainer from './components/query-form-container.js';
-import FoursquareSearch from './components/foursquare-search.js';
+import SearchAggregator from './components/search-aggregator.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <FoursquareSearch />
+        <SearchAggregator />
       </div>
     );
   }  

@@ -31,7 +31,6 @@ class SearchAggregator extends React.Component {
   	
   handleQueryRemove(event) {
     var self = this;
-	/*
     
     let idx = -1;
     for(let i=0; i<self.state.queryValues.length; i++) {
@@ -44,7 +43,8 @@ class SearchAggregator extends React.Component {
 			self.state.queryValues.splice(idx, 1);
 			self.state.lists.splice(idx, 1);
     }
-		*/
+		
+		self.setState(self.state);
   }
 		
 	render() {
@@ -56,10 +56,12 @@ class SearchAggregator extends React.Component {
         
 				<ValueList
           values={this.state.queryValues}
+					removeFunc={this.handleQueryRemove}
         />
 				
 				<StackedBarChart
 					lists={this.state.lists}
+					queries={this.state.queryValues}
 				/>
       </div>
  		);

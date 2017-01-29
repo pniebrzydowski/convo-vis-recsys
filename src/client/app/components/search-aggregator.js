@@ -63,16 +63,18 @@ class SearchAggregator extends React.Component {
     var self = this;
     
     let idx = -1;
-    for(let i=0; i<self.state.queryValues.length; i++) {
-      if(self.state.queryValues[i] === event.target.name) {
+    for(let i=0; i<self.queries.length; i++) {
+      if(self.queries[i].name === event.target.name) {
         idx = i;
         break;
       }
     }
     if(idx > -1) {
-			let newLists = self.state.lists.splice(idx, 1);
-			let newVals = self.state.queryValues.splice(idx, 1);
-    }		
+			self.queries.splice(idx, 1);
+    }
+		
+		self.adjustQueryWeighting();
+		self.drawChart();
   }
 	
 	handleWeightChange(values) {
@@ -89,10 +91,7 @@ class SearchAggregator extends React.Component {
 	adjustQueryWeighting() {
 		var self = this;
 		
-		let wts = [];
-		let eqWt = 600 / self.queries.length;
-		let totalWt = 0;
-		
+		let eqWt = 600 / self.queries.length;		
 		for(let i=0; i<self.queries.length; i++) {
 			self.queries[i].weight = eqWt;
 

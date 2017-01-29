@@ -22,7 +22,7 @@ class StackedBarChart extends React.Component {
   }    
 		
 	render() {
-		if(this.props.chartData.length === 0) {
+		if(this.props.chartSeries.length === 0) {
 			return null;
 		}
 		

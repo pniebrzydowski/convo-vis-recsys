@@ -11,19 +11,18 @@ class StackedBarChart extends React.Component {
       chartSeries: [],
       chartData: [],
 			sliderStepSize: 600,
-			queryValues: []
+			weightValues: []
 		}
     this.WIDTH = 800;
     this.HEIGHT = 500;
     this.xDomain = [0,100];
     this.xTickFormat = d3.format(".3");
     this.yScale = 'ordinal';
-		this.queryWeights = [];
-    this.venues = [];
     this.MAX_RANK = 30;
+
+    this.venues = [];
 		
     this.handleWeightChange = this.handleWeightChange.bind(this);
-    
   }
   
   x(d) {
@@ -34,14 +33,15 @@ class StackedBarChart extends React.Component {
   }
 	
 	componentWillReceiveProps(nextProps) {
-		if(this.props.queries.length === this.state.queryValues.length) return;
+		if(this.props.queries.length <= this.state.weightValues.length) return;
 		var self = this;
 		
 		let newList = nextProps.lists[nextProps.lists.length - 1];
-		self.setVenueRankings(newList.list, newList.query);
+		self.addNewList(newList.list, newList.query);
+		self.drawChart();
 	}
 		
-  setVenueRankings(venues, newQuery) {
+  addNewList(venues, newQuery) {
 		var self = this;
     		    
     for(let i=0; i<venues.length; i++) {
@@ -49,8 +49,7 @@ class StackedBarChart extends React.Component {
       let dataObj = {
         id: venues[i].venue.id,
         name: venues[i].venue.name,
-        venueScore: 0,
-        queryScores: []
+        queryRanks: {}
       };
       
       for(let j=0; j<self.venues.length; j++) {
@@ -61,78 +60,66 @@ class StackedBarChart extends React.Component {
         }
       }
       
-      dataObj.queryScores[newQuery] = self.MAX_RANK - i;
+      dataObj.queryRanks[newQuery] = self.MAX_RANK - i;
 
       if(!found) {
         self.venues.push(dataObj);
       }
     }
-    
-    let queryCt = self.props.queries.length - 1;
-    for(let i=0; i<queryCt; i++) {
-      let wt = self.queryWeights[i];
-      let newWt = ((wt * queryCt)/(queryCt + 1));
-			self.queryWeights[i] = newWt;
-    }
-    
-		self.queryWeights.push( 600 );
-    self.drawChart();
-  }
-  
+	}
+		
+	adjustQueryWeighting() {
+		var self = this;
+		
+		let wts = [];
+		let eqWt = 600 / self.props.queries.length;
+		let totalWt = 0;
+		
+		for(let i=0; i<self.props.queries.length; i++) {
+			totalWt += eqWt;
+			wts.push(totalWt);
+
+			/*
+			let query = self.props.queries[i];
+			
+			for(let j=0; j<self.queryWeights.length; j++) {
+				let oldWt = -1;
+				if(self.queryWeights[j].name === query) {
+					oldWt = self.queryWeights[j].weight;
+				}
+			}
+
+			
+			if(oldWt < 0) {
+				self.queryWeights.push({
+					field: query,
+					name: query,
+					weight: 600 / self.props.queries.length
+				})
+			} else {
+				self.queryWeights[query] = newWt;
+			}*/
+		}
+		
+		return wts;
+	}
+	
   drawChart() {
     var self = this;
     
-    self.adjustVenueWeighting();
+		var sliderValues = self.adjustQueryWeighting();
+		var seriesArray = self.getSeriesArray();
+		var topVenues = self.getTopVenues(sliderValues);
+		
     self.setState({
-      chartSeries: self.getSeriesArray(),
-      chartData: self.getTopVenues(),
+      chartSeries: seriesArray,
+      chartData: topVenues,
 			sliderStepSize: 60 / self.props.queries.length,
-			queryValues: self.queryWeights
+			weightValues: sliderValues
     });
 		
-    console.log(self.state);
-  }
-  
-	/*
-  adjustQueryWeighting() {
-    var self = this;
-    
-    let totalWeight = 0;
-    for(let i=0; i<self.queries.length; i++) {
-      totalWeight += self.queries[i].value;
-    }
-    
-		let weightSum = 0;
-    for(let i=0; i<self.queries.length; i++) {
-      let wt = self.queries[i].value;
-      let newWt = (600 * wt) / totalWeight;
-			weightSum += newWt;
-			self.queryWeights[i] = weightSum;
-    }
-  }
-	*/
-  
-  adjustVenueWeighting() {
-    var self = this;
-    
-    for(let i=0; i<self.venues.length; i++) {
-      let venueScore = 0;
-			let prevWt = 0;
-      for(let j=0; j<self.props.queries.length; j++) {
-        if(self.venues[i].queryScores[self.props.queries[j]] === undefined) {
-          self.venues[i].queryScores[self.props.queries[j]] = 0;
-          self.venues[i][self.props.queries[j]] = 0;
-        } else {
-          let queryScore = self.venues[i].queryScores[self.props.queries[j]];
-					let queryWt = self.queryWeights[j] - prevWt;
-          let wtdScore = (queryScore * queryWt) / self.MAX_RANK / 6;
-          self.venues[i][self.props.queries[j]] = wtdScore;
-          venueScore += wtdScore;
-        }
-				prevWt = self.queryWeights[j];
-      }
-      self.venues[i].venueScore = venueScore;
-    }
+		console.log(topVenues);
+    console.log(sliderValues);
   }
     
   getSeriesArray() {
@@ -147,23 +134,42 @@ class StackedBarChart extends React.Component {
     }
     return seriesArray;
   }
-  
-  getTopVenues() {
+	  
+  getTopVenues(weights) {
     var self = this;
     
-    self.venues.sort(function(a,b) {
-      return b.venueScore - a.venueScore;
+		let allVenues = self.venues.slice();
+		
+		for(let i=0; i<allVenues.length; i++) {
+			let score = 0;
+			let ranks = allVenues[i].queryRanks;
+			
+			for(let j=0; j<self.props.queries.length; j++) {
+				let query = self.props.queries[j];
+				if(!ranks[query]) {
+					allVenues[i][query] = 0;
+				} else {
+					let wt = weights[j] - (j===0 ? 0 : weights[j-1]);
+					let weightedScore = wt / 6 * ranks[query] / 30;
+					allVenues[i][query] = weightedScore;
+					score += weightedScore;
+				}
+			}
+			
+			allVenues[i].totalScore = score;
+		}
+    allVenues.sort(function(a,b) {
+      return b.totalScore - a.totalScore;
     });
     
-    return self.venues.slice(0,10).reverse();
+    return allVenues.slice(0,10).reverse();
   }
 	
   handleWeightChange(values) {
 		var self = this;
-		
-		self.queryWeights = values;
-		self.setState({queryValues: values});
-		self.drawChart();
+		self.setState({weightValues: values});
+		console.log(self.state);
+		//self.drawChart();
   }
 		
 	render() {
@@ -175,7 +181,7 @@ class StackedBarChart extends React.Component {
 					max={600}
 					minDistance={this.state.sliderStepSize*2}
 					step={this.state.sliderStepSize}
-					value={this.state.queryValues}
+					value={this.state.weightValues}
 					onAfterChange={this.handleWeightChange}
 					pearling={true}
 				/>

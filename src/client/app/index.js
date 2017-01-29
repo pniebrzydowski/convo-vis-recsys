@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import QueryFormContainer from './components/query-form-container.js';
 import SearchAggregator from './components/search-aggregator.js';
 
 class App extends React.Component {

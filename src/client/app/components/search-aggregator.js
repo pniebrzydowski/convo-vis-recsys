@@ -49,13 +49,12 @@ class SearchAggregator extends React.Component {
       }
     }
 		
+		self.adjustWeightingOnAdd();
 		self.queries.push({
 			name: query,
-			weight: -1,
+			weight: 600 / (self.queries.length + 1),
 			items: results
 		});
-		
-		self.adjustQueryWeighting();
 		self.drawChart();
 	}
   	
@@ -73,7 +72,7 @@ class SearchAggregator extends React.Component {
 			self.queries.splice(idx, 1);
     }
 		
-		self.adjustQueryWeighting();
+		self.adjustWeightingOnRemove();
 		self.drawChart();
   }
 	
@@ -87,34 +86,25 @@ class SearchAggregator extends React.Component {
 		
 		self.drawChart();
 	}
-		
-	adjustQueryWeighting() {
+	
+	adjustWeightingOnRemove() {
 		var self = this;
-		
-		let eqWt = 600 / self.queries.length;		
+
+		let totalWt = 0;
 		for(let i=0; i<self.queries.length; i++) {
-			self.queries[i].weight = eqWt;
+			totalWt += self.queries[i].weight;
+		}
+		
+		for(let i=0; i<self.queries.length; i++) {
+			self.queries[i].weight *= 600 / totalWt;
+		}
+	}
+		
+	adjustWeightingOnAdd() {
+		var self = this;
 
-			/*
-			let query = self.queries[i];
-			
-			for(let j=0; j<self.state.queryWeights.length; j++) {
-				let oldWt = -1;
-				if(self.queryWeights[j].name === query) {
-					oldWt = self.queryWeights[j].weight;
-				}
-			}
-
-			
-			if(oldWt < 0) {
-				self.queryWeights.push({
-					field: query,
-					name: query,
-					weight: 600 / self.queries.length
-				})
-			} else {
-				self.queryWeights[query] = newWt;
-			}*/
+		for(let i=0; i<self.queries.length; i++) {
+			self.queries[i].weight *= self.queries.length / (self.queries.length + 1);
 		}
 	}
 	

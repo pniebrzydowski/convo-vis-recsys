@@ -12,6 +12,12 @@ class StackedBarChart extends React.Component {
     this.xTickFormat = d3.format(".3");
     this.yScale = 'ordinal';
     this.MAX_RANK = 30;
+		this.margins = {
+			top: 10,
+			right: 20,
+			bottom: 50,
+			left: 130
+		}
   }
   
   x(d) {
@@ -38,6 +44,7 @@ class StackedBarChart extends React.Component {
 				y= {this.y}
 				yScale = {this.yScale}
 				horizontal= {true}
+				margins= {this.margins}
 			/>
  		);
 	}

@@ -181,20 +181,22 @@ class SearchAggregator extends React.Component {
 					sendResults={this.handleQueryAdd}
 				/>
         
-				<ValueList
-          values={this.state.queryNames}
-					removeFunc={this.handleQueryRemove}
-        />
+				<div className = "visualization">
+					<ValueList
+						values={this.state.queryNames}
+						removeFunc={this.handleQueryRemove}
+					/>
 				
-				<SliderWeighted
-					values={this.state.queryValues}
-					handleWeightChange={this.handleWeightChange}
-				/>
-				
-        <StackedBarChart
-          chartData = {this.state.chartData}
-          chartSeries = {this.state.chartSeries}
-        />
+					<SliderWeighted
+						values={this.state.queryValues}
+						handleWeightChange={this.handleWeightChange}
+					/>
+					
+					<StackedBarChart
+						chartData = {this.state.chartData}
+						chartSeries = {this.state.chartSeries}
+					/>
+				</div>
       </div>
  		);
 	}

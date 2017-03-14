@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "d3": "^4.7.3",
-    "d3-cloud": "^1.2.4",
     "react": "^15.4.2",
     "react-d3-basic": "^1.6.11",
     "react-dom": "^15.4.2",

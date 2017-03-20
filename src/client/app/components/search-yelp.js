@@ -31,8 +31,7 @@ class SearchYelp extends React.Component {
 		console.log("query: " + self.state.query + " | loc: " + self.state.loc);
 		let params = {
 		  "location": self.state.loc,
-		  "term": self.state.query,
-		  "dataType": "jsonp"
+		  "term": self.state.query
 		};
     
 		let newQuery = self.state.query;

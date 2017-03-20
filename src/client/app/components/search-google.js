@@ -13,7 +13,7 @@ class SearchGoogle extends React.Component {
 		
 		this.google = {
 			key: 'AIzaSyAqxqzN_wV61labw93yu2h9MX2-jwzCMvs',
-			searchUrl: 'http://maps.googleapis.com/maps/api/place/nearbysearch/output?',
+			searchUrl: 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,8 +27,7 @@ class SearchGoogle extends React.Component {
     
 		console.log("query: " + self.state.query + " | loc: " + self.state.loc);
 		let params = {
-		  "location": self.state.loc,
-		  "keyword": self.state.query,
+		  "query": self.state.query + " in " + self.state.loc,
 		  "key": self.google.key
 		};
     
@@ -42,6 +41,7 @@ class SearchGoogle extends React.Component {
 				self.addVenues(xmlhttp.responseText.groups[0].items, newQuery);
 			}
 		}
+		console.log(self.google.searchUrl + self.serialize(params));
 		xmlhttp.open("GET", self.google.searchUrl + self.serialize(params), true);
 		xmlhttp.send();
 	}

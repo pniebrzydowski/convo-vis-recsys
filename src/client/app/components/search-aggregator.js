@@ -3,6 +3,7 @@ import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderWeighted from './slider-weighted.js';
 import SearchFoursquare from './search-foursquare.js';
+import SearchYelp from './search-yelp.js';
 import SearchGoogle from './search-google.js';
 
 class SearchAggregator extends React.Component {

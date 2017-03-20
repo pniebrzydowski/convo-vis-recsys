@@ -39,12 +39,19 @@ class SearchGoogle extends React.Component {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
 				let json = JSON.parse(xmlhttp.responseText);
 				console.log(json.results);
-				self.addVenues(json.results, newQuery);
+				self.addVenues(json.results, newQuery, self.getItemId, self.getItemName);
 			}
 		}
 		console.log(self.google.searchUrl + self.serialize(params));
 		xmlhttp.open("GET", self.google.searchUrl + self.serialize(params), true);
 		xmlhttp.send();
+	}
+	
+	getItemId(item) {
+		return item.id;
+	}
+	getItemName(item) {
+		return item.name;
 	}
 	
 	serialize(obj) {

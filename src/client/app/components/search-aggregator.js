@@ -25,19 +25,19 @@ class SearchAggregator extends React.Component {
 		this.handleWeightChange = this.handleWeightChange.bind(this);
 	}
 		
-	handleQueryAdd(results, query) {
+	handleQueryAdd(results, query, idFn, nameFn) {
 		var self = this;
     		    
     for(let i=0; i<results.length; i++) {
       let found = false;
       let dataObj = {
-        id: results[i].venue.id,
-        name: results[i].venue.name,
+        id: idFn(results[i]),
+        name: nameFn(results[i]),
         queryRanks: {}
       };
       
       for(let j=0; j<self.resultItems.length; j++) {
-        if(self.resultItems[j].id === results[i].venue.id) {
+        if(self.resultItems[j].id === idFn(results[i])) {
           dataObj = self.resultItems[j];
           found = true;
           break;

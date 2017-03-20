@@ -32,24 +32,31 @@ class SearchFoursquare extends React.Component {
 		  "query": self.state.query
 		};
     
-    let newQuery = self.state.query;
+		let newQuery = self.state.query;
 		
 		self.foursquare.venues.explore(params)
 		  .then(function(data) {
 				console.log(data);
-				self.addVenues(data.response.groups[0].items, newQuery);
+				self.addVenues(data.response.groups[0].items, newQuery, self.getItemId, self.getItemName);
 			})
 		  .catch(function(err){
         console.log(err);
       });
 	}
+	
+	getItemId(item) {
+		return item.venue.id;
+	}
+	getItemName(item) {
+		return item.venue.name;
+	}
 	  	
 	handleQueryChange(event) {
 		this.setState({query: event.target.value});
 	}
-  handleLocChange(event) {
-    this.setState({loc: event.target.value});
-  }
+	handleLocChange(event) {
+		this.setState({loc: event.target.value});
+	}
 		
 	render() {
 		return (

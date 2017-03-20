@@ -1,11 +1,9 @@
 import React from 'react';
 import SingleInput from './single-input.js';
-import ValueList from './value-list.js';
-import StackedBarChart from './stacked-bar-chart.js';
 
 class SearchFoursquare extends React.Component {
 	constructor(props) {
-		super(props);
+	super(props);
     this.addVenues = props.sendResults;
    
     this.state = {

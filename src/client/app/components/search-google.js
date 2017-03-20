@@ -37,8 +37,9 @@ class SearchGoogle extends React.Component {
 		xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function(){
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
-				console.log(xmlhttp.responseText);
-				self.addVenues(xmlhttp.responseText.groups[0].items, newQuery);
+				let json = JSON.parse(xmlhttp.responseText);
+				console.log(json.results);
+				self.addVenues(json.results, newQuery);
 			}
 		}
 		console.log(self.google.searchUrl + self.serialize(params));

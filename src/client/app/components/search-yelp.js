@@ -3,24 +3,24 @@ import SingleInput from './single-input.js';
 
 class SearchYelp extends React.Component {
 	constructor(props) {
-	super(props);
-    this.addVenues = props.sendResults;
-   
-    this.state = {
-      query: null,
-      loc: null
+		super(props);
+		this.addVenues = props.sendResults;
+	   
+		this.state = {
+		  query: null,
+		  loc: null
 		}
-	
+		
 		this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleQueryChange = this.handleQueryChange.bind(this);
-    this.handleLocChange = this.handleLocChange.bind(this);
+		this.handleQueryChange = this.handleQueryChange.bind(this);
+		this.handleLocChange = this.handleLocChange.bind(this);
 		this.foursquare = require('react-native-foursquare-api')({
 		  clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
 		  clientSecret: 'UVG4K1IVCCUFJA3XW2XOZCSGSFPJ1UJ1RD42I0GGA4XDTEFB',
 		  style: 'foursquare', // default: 'foursquare' 
 		  version: '20160107' //  default: '20140806' 
 		});
-  }
+	}
 	
 	handleSubmit(event) {
 		var self = this;

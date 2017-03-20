@@ -3,12 +3,13 @@ import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderWeighted from './slider-weighted.js';
 import SearchFoursquare from './search-foursquare.js';
+import SearchGoogle from './search-google.js';
 
 class SearchAggregator extends React.Component {
 	constructor(props) {
 		super(props);
     
-    this.state = {
+		this.state = {
 			chartData: [],
 			chartSeries: [],
 			queryNames: [],
@@ -19,9 +20,9 @@ class SearchAggregator extends React.Component {
 		this.resultItems = [];
 		
 		this.handleQueryAdd = this.handleQueryAdd.bind(this);
-    this.handleQueryRemove = this.handleQueryRemove.bind(this);
+		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
-  }
+	}
 		
 	handleQueryAdd(results, query) {
 		var self = this;
@@ -176,11 +177,13 @@ class SearchAggregator extends React.Component {
 		
 	render() {
 		return (
-      <div>
-        <SearchFoursquare
+			<div>
+				<SearchFoursquare
 					sendResults={this.handleQueryAdd}
 				/>
-        
+				<SearchGoogle
+					sendResults={this.handleQueryAdd}
+				/>
 				<div className = "visualization">
 					<ValueList
 						values={this.state.queryNames}

@@ -51,10 +51,10 @@ class SearchAggregator extends React.Component {
       }
     }
 		
-		self.adjustWeightingOnAdd();
+		//self.adjustWeightingOnAdd();
 		self.queries.push({
 			name: query,
-			weight: 600 / (self.queries.length + 1),
+			weight: 5,
 			items: results
 		});
 		self.drawChart();
@@ -74,7 +74,7 @@ class SearchAggregator extends React.Component {
 			self.queries.splice(idx, 1);
     }
 		
-		self.adjustWeightingOnRemove();
+		//self.adjustWeightingOnRemove();
 		self.drawChart();
   }
 	
@@ -83,7 +83,8 @@ class SearchAggregator extends React.Component {
 		
 		
 		for(let i=0; i<self.queries.length; i++) {
-			self.queries[i].weight = (i==0 ? values[i] : (values[i] - values[i-1]));
+			self.queries[i].weight = values[i];
+				//(i==0 ? values[i] : (values[i] - values[i-1]));
 		}
 		
 		self.drawChart();
@@ -114,6 +115,10 @@ class SearchAggregator extends React.Component {
     var self = this;
     
 		let allVenues = self.resultItems.slice();
+		let totalWeight = 0;
+		for(let i=0; i<self.queries.length; i++) {
+			totalWeight += self.queries[i].weight;
+		}
 		
 		for(let i=0; i<allVenues.length; i++) {
 			let score = 0;
@@ -124,7 +129,9 @@ class SearchAggregator extends React.Component {
 				if(!ranks[query]) {
 					allVenues[i][query] = 0;
 				} else {
-					let weightedScore = self.queries[j].weight / 6 * ranks[query];
+					let queryWeight = self.queries[j].weight / totalWeight;
+					let weightedScore = 100 * queryWeight * ranks[query];
+					//let weightedScore = self.queries[j].weight / 6 * ranks[query];
 					allVenues[i][query] = weightedScore;
 					score += weightedScore;
 				}
@@ -150,9 +157,8 @@ class SearchAggregator extends React.Component {
 		
 		let wt = 0;
 		for(let i=0; i<self.queries.length; i++) {
-			wt += self.queries[i].weight;
 			queries.names.push(self.queries[i].name);
-			queries.weights.push({name: self.queries[i].name, weight: wt});
+			queries.weights.push({name: self.queries[i].name, weight: self.queries[i].weight});
 			queries.seriesArray.push({
         field: self.queries[i].name,
         name: self.queries[i].name

@@ -1,7 +1,7 @@
 import React from 'react';
 import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
-import SliderWeighted from './slider-weighted.js';
+import SliderMulti from './slider-multi.js';
 import SearchFoursquare from './search-foursquare.js';
 import SearchYelp from './search-yelp.js';
 import SearchGoogle from './search-google.js';
@@ -15,7 +15,7 @@ class SearchAggregator extends React.Component {
 			chartSeries: [],
 			queryNames: [],
 			queryValues: []
-		}
+		};
 
 		this.queries = [];
 		this.resultItems = [];
@@ -152,7 +152,7 @@ class SearchAggregator extends React.Component {
 		for(let i=0; i<self.queries.length; i++) {
 			wt += self.queries[i].weight;
 			queries.names.push(self.queries[i].name);
-			queries.weights.push(wt);
+			queries.weights.push({name: self.queries[i].name, weight: wt});
 			queries.seriesArray.push({
         field: self.queries[i].name,
         name: self.queries[i].name
@@ -191,7 +191,7 @@ class SearchAggregator extends React.Component {
 						removeFunc={this.handleQueryRemove}
 					/>
 				
-					<SliderWeighted
+					<SliderMulti
 						values={this.state.queryValues}
 						handleWeightChange={this.handleWeightChange}
 					/>

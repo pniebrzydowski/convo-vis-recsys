@@ -181,14 +181,17 @@ class SearchAggregator extends React.Component {
 		
     self.setState(newState);
   }
-		
+
+  /*
+	 <SearchGoogle
+	 sendResults={this.handleQueryAdd}
+	 />
+	 */
+
 	render() {
 		return (
 			<div>
 				<SearchFoursquare
-					sendResults={this.handleQueryAdd}
-				/>
-				<SearchGoogle
 					sendResults={this.handleQueryAdd}
 				/>
 				<div className = "visualization">

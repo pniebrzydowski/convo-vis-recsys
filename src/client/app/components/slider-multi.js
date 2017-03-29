@@ -33,6 +33,8 @@ class SliderMulti extends React.Component {
 							name={val.name}
 							min={1}
 							max={10}
+							orientation={"vertical"}
+							invert={true}
 							value={val.weight}
 							onAfterChange={weightChange}
 						/>

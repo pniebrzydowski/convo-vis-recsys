@@ -20,26 +20,30 @@ class SearchAggregator extends React.Component {
 
 		this.queries = [];
 		this.resultItems = [];
-		this.searches = [];
+		this.searches = [new SearchFoursquare()];
 		
 		this.handleQueryAdd = this.handleQueryAdd.bind(this);
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
-
-		this.foursquare = new SearchFoursquare();
 	}
 		
 	handleQueryAdd(query, loc) {
 		var self = this;
 
-		self.foursquare.getResults(query, loc).then(function(result){
-			self.handleResults(result, query, self.foursquare.idFunction, self.foursquare.nameFunction);
-			self.queries.push({
-				name: query,
-				weight: 5
+		let resultCount = 0;
+		for(let i=0; i<self.searches.length; i++) {
+			self.searches[i].getResults(query, loc).then(function(result){
+				resultCount++;
+				self.handleResults(result, query, self.searches[i].idFunction, self.searches[i].nameFunction);
+				if(resultCount === self.searches.length) {
+					self.queries.push({
+						name: query,
+						weight: 5
+					});
+					self.drawChart();
+				}
 			});
-			self.drawChart();
-		})
+		}
 
 		/* @TODO Need to figure out how to return the promises in aggregation
 		let promises = [];

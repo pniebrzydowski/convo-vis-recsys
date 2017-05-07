@@ -19,13 +19,15 @@ class SearchAggregator extends React.Component {
 		this.resultItems = [];
 		this.searches = props.searches;
 		
-		this.handleQueryAdd = this.handleQueryAdd.bind(this);
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
 	}
-		
-	handleQueryAdd(query, loc) {
+
+	componentWillReceiveProps(nextProps) {
 		var self = this;
+
+		let query = nextProps.newQuery.query;
+		let loc = nextProps.newQuery.loc;
 
 		let resultCount = 0;
 		for(let i=0; i<self.searches.length; i++) {
@@ -41,7 +43,6 @@ class SearchAggregator extends React.Component {
 				}
 			});
 		}
-
 	}
 
 	handleResults(results, query, idFn, nameFn) {
@@ -193,27 +194,22 @@ class SearchAggregator extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<AggregateForm
-					handleQueryAdd={this.handleQueryAdd}
+			<div className = "visualization">
+				<ValueList
+					values={this.state.queryNames}
+					removeFunc={this.handleQueryRemove}
 				/>
-				<div className = "visualization">
-					<ValueList
-						values={this.state.queryNames}
-						removeFunc={this.handleQueryRemove}
-					/>
-				
-					<SliderMulti
-						values={this.state.queryValues}
-						handleWeightChange={this.handleWeightChange}
-					/>
-					
-					<StackedBarChart
-						chartData = {this.state.chartData}
-						chartSeries = {this.state.chartSeries}
-					/>
-				</div>
-      </div>
+
+				<SliderMulti
+					values={this.state.queryValues}
+					handleWeightChange={this.handleWeightChange}
+				/>
+
+				<StackedBarChart
+					chartData = {this.state.chartData}
+					chartSeries = {this.state.chartSeries}
+				/>
+			</div>
  		);
 	}
 }

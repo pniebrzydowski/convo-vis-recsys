@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SearchAggregator from './components/search-aggregator.js';
+import RestaurantSearch from './components/restaurant-search.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <SearchAggregator />
+        <RestaurantSearch />
       </div>
     );
   }  

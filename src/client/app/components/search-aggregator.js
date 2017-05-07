@@ -3,9 +3,6 @@ import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderMulti from './slider-multi.js';
 import AggregateForm from './aggregate-form.js';
-import SearchFoursquare from './search-foursquare.js';
-//import SearchYelp from './search-yelp.js';
-//import SearchGoogle from './search-google.js';
 
 class SearchAggregator extends React.Component {
 	constructor(props) {
@@ -20,7 +17,7 @@ class SearchAggregator extends React.Component {
 
 		this.queries = [];
 		this.resultItems = [];
-		this.searches = [new SearchFoursquare()];
+		this.searches = props.searches;
 		
 		this.handleQueryAdd = this.handleQueryAdd.bind(this);
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
@@ -45,24 +42,6 @@ class SearchAggregator extends React.Component {
 			});
 		}
 
-		/* @TODO Need to figure out how to return the promises in aggregation
-		let promises = [];
-		for(let i=0; i<self.searches.length; i++) {
-			promises.push(self.searches[i].getResults);
-
-			sendPromises().then(function(res) {
-				for(let result=0; result<res.length; result++){
-					self.handleResults(result, query, self.searches[i].idFunction, self.searches[i].nameFunction);
-				}
-
-				self.queries.push({
-					name: query,
-					weight: 5
-				});
-				self.drawChart();
-			});
-		}
-		*/
 	}
 
 	handleResults(results, query, idFn, nameFn) {

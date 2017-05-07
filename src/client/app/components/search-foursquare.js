@@ -8,12 +8,12 @@ class SearchFoursquare {
 		});
   }
 	
-	getResults(query, loc) {
+	getResults(newQuery) {
 		var self = this;
 
 		let params = {
-		  "near": loc,
-		  "query": query
+		  "near": newQuery.loc,
+		  "query": newQuery.query
 		};
 
 		return self.foursquare.venues.explore(params)

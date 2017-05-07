@@ -26,17 +26,14 @@ class SearchAggregator extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		var self = this;
 
-		let query = nextProps.newQuery.query;
-		let loc = nextProps.newQuery.loc;
-
 		let resultCount = 0;
 		for(let i=0; i<self.searches.length; i++) {
-			self.searches[i].getResults(query, loc).then(function(result){
+			self.searches[i].getResults(nextProps.newQuery).then(function(result){
 				resultCount++;
-				self.handleResults(result, query, self.searches[i].idFunction, self.searches[i].nameFunction);
+				self.handleResults(result, nextProps.newQuery.query, self.searches[i].idFunction, self.searches[i].nameFunction);
 				if(resultCount === self.searches.length) {
 					self.queries.push({
-						name: query,
+						name: nextProps.newQuery.query,
 						weight: 5
 					});
 					self.drawChart();

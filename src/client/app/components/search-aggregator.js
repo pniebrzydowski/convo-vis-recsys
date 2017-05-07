@@ -2,9 +2,10 @@ import React from 'react';
 import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderMulti from './slider-multi.js';
-import SearchFoursquare from './search-foursquare.js';
-import SearchYelp from './search-yelp.js';
-import SearchGoogle from './search-google.js';
+import AggregateForm from './aggregate-form.js';
+//import SearchFoursquare from './search-foursquare.js';
+//import SearchYelp from './search-yelp.js';
+//import SearchGoogle from './search-google.js';
 
 class SearchAggregator extends React.Component {
 	constructor(props) {
@@ -19,13 +20,76 @@ class SearchAggregator extends React.Component {
 
 		this.queries = [];
 		this.resultItems = [];
+		this.searches = [];
 		
 		this.handleQueryAdd = this.handleQueryAdd.bind(this);
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
+
+		/**
+		 * @TODO move to own class
+		 */
+		this.foursquare = require('react-native-foursquare-api')({
+			clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
+			clientSecret: 'UVG4K1IVCCUFJA3XW2XOZCSGSFPJ1UJ1RD42I0GGA4XDTEFB',
+			style: 'foursquare', // default: 'foursquare'
+			version: '20160107' //  default: '20140806'
+		});
 	}
 		
-	handleQueryAdd(results, query, idFn, nameFn) {
+	handleQueryAdd(query, loc) {
+		var self = this;
+
+		let params = {
+			"near": loc,
+			"query": query
+		};
+
+		self.foursquare.venues.explore(params)
+			.then(function(data) {
+				console.log(data);
+				self.handleResults(
+					data.response.groups[0].items,
+					query,
+					function(item) {
+						return item.venue.id;
+					},
+					function(item) {
+						return item.venue.name;
+					});
+
+				self.queries.push({
+					name: query,
+					weight: 5
+				});
+				self.drawChart();
+			})
+			.catch(function(err){
+				console.log(err);
+			});
+
+
+		/* @TODO Need to figure out how to return the promises in aggregation
+		let promises = [];
+		for(let i=0; i<self.searches.length; i++) {
+			promises.push(self.searches[i].getResults);
+
+			sendPromises().then(function(res) {
+				for(let result=0; result<res.length; result++){
+					self.handleResults(result, query, self.searches[i].idFunction, self.searches[i].nameFunction);
+				}
+
+				self.queries.push({
+					name: query,
+					weight: 5
+				});
+				self.drawChart();
+			});
+		}
+		*/
+	}
+
+	handleResults(results, query, idFn, nameFn) {
 		var self = this;
     		    
     for(let i=0; i<results.length; i++) {
@@ -50,14 +114,6 @@ class SearchAggregator extends React.Component {
         self.resultItems.push(dataObj);
       }
     }
-		
-		//self.adjustWeightingOnAdd();
-		self.queries.push({
-			name: query,
-			weight: 5,
-			items: results
-		});
-		self.drawChart();
 	}
   	
   handleQueryRemove(event) {
@@ -74,7 +130,6 @@ class SearchAggregator extends React.Component {
 			self.queries.splice(idx, 1);
     }
 		
-		//self.adjustWeightingOnRemove();
 		self.drawChart();
   }
 	
@@ -84,7 +139,6 @@ class SearchAggregator extends React.Component {
 		
 		for(let i=0; i<self.queries.length; i++) {
 			self.queries[i].weight = values[i];
-				//(i==0 ? values[i] : (values[i] - values[i-1]));
 		}
 		
 		self.drawChart();
@@ -182,17 +236,11 @@ class SearchAggregator extends React.Component {
     self.setState(newState);
   }
 
-  /*
-	 <SearchGoogle
-	 sendResults={this.handleQueryAdd}
-	 />
-	 */
-
 	render() {
 		return (
 			<div>
-				<SearchFoursquare
-					sendResults={this.handleQueryAdd}
+				<AggregateForm
+					handleQueryAdd={this.handleQueryAdd}
 				/>
 				<div className = "visualization">
 					<ValueList

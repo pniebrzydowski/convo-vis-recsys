@@ -9,25 +9,27 @@ class SearchFoursquare {
   }
 	
 	getResults(query, loc) {
+		var self = this;
+
 		let params = {
 		  "near": loc,
 		  "query": query
 		};
 
-		self.foursquare.venues.explore(params)
-		  .then(function(data) {
+		return self.foursquare.venues.explore(params)
+			.then(function (data) {
 				console.log(data);
-				self.addVenues(data.response.groups[0].items, query, self.getItemId, self.getItemName);
+				return data.response.groups[0].items;
 			})
-		  .catch(function(err){
-        console.log(err);
-      });
+			.catch(function (err) {
+				console.log(err);
+			})
 	}
-	
-	getItemId(item) {
+
+	idFunction(item) {
 		return item.venue.id;
 	}
-	getItemName(item) {
+	nameFunction(item) {
 		return item.venue.name;
 	}
 	  	

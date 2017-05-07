@@ -3,7 +3,7 @@ import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderMulti from './slider-multi.js';
 import AggregateForm from './aggregate-form.js';
-//import SearchFoursquare from './search-foursquare.js';
+import SearchFoursquare from './search-foursquare.js';
 //import SearchYelp from './search-yelp.js';
 //import SearchGoogle from './search-google.js';
 
@@ -26,48 +26,20 @@ class SearchAggregator extends React.Component {
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
 
-		/**
-		 * @TODO move to own class
-		 */
-		this.foursquare = require('react-native-foursquare-api')({
-			clientID: 'YHRN40SRYBAXTAP0NYZ4REDHUDYG0BW2Y23XFAUF3I0YBU5H',
-			clientSecret: 'UVG4K1IVCCUFJA3XW2XOZCSGSFPJ1UJ1RD42I0GGA4XDTEFB',
-			style: 'foursquare', // default: 'foursquare'
-			version: '20160107' //  default: '20140806'
-		});
+		this.foursquare = new SearchFoursquare();
 	}
 		
 	handleQueryAdd(query, loc) {
 		var self = this;
 
-		let params = {
-			"near": loc,
-			"query": query
-		};
-
-		self.foursquare.venues.explore(params)
-			.then(function(data) {
-				console.log(data);
-				self.handleResults(
-					data.response.groups[0].items,
-					query,
-					function(item) {
-						return item.venue.id;
-					},
-					function(item) {
-						return item.venue.name;
-					});
-
-				self.queries.push({
-					name: query,
-					weight: 5
-				});
-				self.drawChart();
-			})
-			.catch(function(err){
-				console.log(err);
+		self.foursquare.getResults(query, loc).then(function(result){
+			self.handleResults(result, query, self.foursquare.idFunction, self.foursquare.nameFunction);
+			self.queries.push({
+				name: query,
+				weight: 5
 			});
-
+			self.drawChart();
+		})
 
 		/* @TODO Need to figure out how to return the promises in aggregation
 		let promises = [];

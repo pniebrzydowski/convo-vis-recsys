@@ -15,6 +15,13 @@ class RestaurantSearch extends React.Component {
 		this.setState({newQuery: {query: query, loc: loc}});
 	}
 
+	matchRestaurants(r1, r2) {
+		if(r1.name === r2.name && r1.address === r2.address) {
+			return true;
+		}
+		return false;
+	}
+
 	render() {
 		return (
 			<div>
@@ -23,6 +30,7 @@ class RestaurantSearch extends React.Component {
 				/>
 				<SearchAggregator
 					searches={this.searches}
+					matchFunction={this.matchRestaurants}
 					newQuery={this.state.newQuery}
 				/>
       </div>

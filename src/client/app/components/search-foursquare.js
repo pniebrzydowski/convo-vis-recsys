@@ -26,10 +26,16 @@ class SearchFoursquare {
 			})
 	}
 
-	idFunction(item) {
-		return item.venue.id;
+	getId(item) {
+		let idObj = {
+			source: "Foursquare",
+			id: item.venue.id,
+			name: item.venue.name,
+			address: item.venue.location.address
+		}
+		return idObj;
 	}
-	nameFunction(item) {
+	getLabel(item) {
 		return item.venue.name;
 	}
 	  	

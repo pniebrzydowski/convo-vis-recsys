@@ -18,6 +18,7 @@ class SearchAggregator extends React.Component {
 		this.queries = [];
 		this.resultItems = [];
 		this.searches = props.searches;
+		this.findMatch = props.matchFunction;
 		
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
@@ -30,7 +31,7 @@ class SearchAggregator extends React.Component {
 		for(let i=0; i<self.searches.length; i++) {
 			self.searches[i].getResults(nextProps.newQuery).then(function(result){
 				resultCount++;
-				self.handleResults(result, nextProps.newQuery.query, self.searches[i].idFunction, self.searches[i].nameFunction);
+				self.handleResults(result, nextProps.newQuery.query, self.searches[i].getId, self.searches[i].getLabel);
 				if(resultCount === self.searches.length) {
 					self.queries.push({
 						name: nextProps.newQuery.query,
@@ -42,19 +43,20 @@ class SearchAggregator extends React.Component {
 		}
 	}
 
-	handleResults(results, query, idFn, nameFn) {
+	handleResults(results, query, idFn, labelFn) {
 		var self = this;
     		    
     for(let i=0; i<results.length; i++) {
       let found = false;
       let dataObj = {
-        id: idFn(results[i]),
-        name: nameFn(results[i]),
+        idObj: idFn(results[i]),
+        name: labelFn(results[i]),
         queryRanks: {}
       };
       
       for(let j=0; j<self.resultItems.length; j++) {
-        if(self.resultItems[j].id === idFn(results[i])) {
+      	var newItemId = idFn(results[i]);
+        if(self.findMatch(self.resultItems[j].idObj, newItemId)) {
           dataObj = self.resultItems[j];
           found = true;
           break;

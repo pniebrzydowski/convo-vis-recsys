@@ -45,30 +45,34 @@ class SearchAggregator extends React.Component {
 
 	handleResults(results, query, idFn, labelFn) {
 		var self = this;
-    		    
-    for(let i=0; i<results.length; i++) {
-      let found = false;
-      let dataObj = {
-        idObj: idFn(results[i]),
-        name: labelFn(results[i]),
-        queryRanks: {}
-      };
-      
-      for(let j=0; j<self.resultItems.length; j++) {
-      	var newItemId = idFn(results[i]);
-        if(self.findMatch(self.resultItems[j].idObj, newItemId)) {
-          dataObj = self.resultItems[j];
-          found = true;
-          break;
-        }
-      }
-      
-      dataObj.queryRanks[query] = (results.length - i)/(results.length);
+		let newResults = [];
 
-      if(!found) {
-        self.resultItems.push(dataObj);
-      }
+    for(let i=0; i<results.length; i++) {
+			let newItemId = idFn(results[i]);
+			let newScore = (results.length - i)/(results.length);
+			let found = false;
+
+    	for(let j=0; j<self.resultItems.length; j++) {
+    		if(self.findMatch(self.resultItems[j].idObj, newItemId)) {
+    			let oldScore = self.resultItems[j].queryRanks[query];
+					let queryScore = (oldScore + newScore) / 2;
+					self.resultsItems[j].queryRanks[query] = queryScore;
+					found = true;
+					break;
+				}
+			}
+			if(!found) {
+				let dataObj = {
+					idObj: newItemId,
+					name: labelFn(results[i]),
+					queryRanks: {}
+				};
+				dataObj.queryRanks[query] = newScore;
+				newResults.push(dataObj);
+			}
     }
+
+    self.resultItems = self.resultItems.concat(newResults);
 	}
   	
   handleQueryRemove(event) {
@@ -187,7 +191,8 @@ class SearchAggregator extends React.Component {
 			queryNames: qInfo.names,
 			queryValues: qInfo.weights
     };
-		
+
+		console.log(newState.chartData);
     self.setState(newState);
   }
 

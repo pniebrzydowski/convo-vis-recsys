@@ -27,11 +27,17 @@ class SearchFoursquare {
 	}
 
 	getId(item) {
+		let loc = item.venue.location.formattedAddress;
+		let adr = "";
+		for(let i=0; i<loc.length; i++) {
+			if(i !== 0) adr += ", ";
+			adr += loc[i];
+		}
 		let idObj = {
 			source: "Foursquare",
 			id: item.venue.id,
 			name: item.venue.name,
-			address: item.venue.location.address
+			address: adr
 		}
 		return idObj;
 	}

@@ -1,56 +1,57 @@
-import React from 'react';
-import SingleInput from './single-input.js';
-
-class SearchGoogle extends React.Component {
-	constructor(props) {
-		super(props);
-		this.addVenues = props.sendResults;
-	   
-		this.state = {
-		  query: null,
-		  loc: null
-		}
-		
+class SearchGoogle {
+	constructor() {
 		this.google = {
 			key: 'AIzaSyAqxqzN_wV61labw93yu2h9MX2-jwzCMvs',
 			searchUrl: 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 		}
-
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleQueryChange = this.handleQueryChange.bind(this);
-		this.handleLocChange = this.handleLocChange.bind(this);
 	}
 	
-	handleSubmit(event) {
+	getResults(newQuery) {
 		var self = this;
-		event.preventDefault();
-    
-		console.log("query: " + self.state.query + " | loc: " + self.state.loc);
+
 		let params = {
-		  "query": self.state.query + " in " + self.state.loc,
+		  "query": newQuery.query + " in " + newQuery.loc,
 		  "key": self.google.key
 		};
-    
-		let newQuery = self.state.query;
-		
-		var xmlhttp;
-		xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function(){
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
-				let json = JSON.parse(xmlhttp.responseText);
-				console.log(json.results);
-				self.addVenues(json.results, newQuery, self.getItemId, self.getItemName);
+
+		return new Promise(function(resolve, reject) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", self.google.searchUrl + self.serialize(params), true);
+			xhr.onload = function () {
+				if (this.status >= 200 && this.status < 300) {
+					let json = JSON.parse(xhr.responseText);
+					console.log(json);
+					resolve(json.results);
+				}
+				else {
+					reject({
+						status: this.status,
+						statusText: xhr.statusText
+					});
+				}
 			}
-		}
-		console.log(self.google.searchUrl + self.serialize(params));
-		xmlhttp.open("GET", self.google.searchUrl + self.serialize(params), true);
-		xmlhttp.send();
+
+			xhr.onerror = function () {
+				reject({
+					status: this.status,
+					statusText: xhr.statusText
+				});
+			};
+			console.log(self.google.searchUrl + self.serialize(params));
+			xhr.send();
+		});
 	}
 	
-	getItemId(item) {
-		return item.id;
+	getId(item) {
+		let idObj = {
+			source: "Google",
+			id: item.id,
+			name: item.name,
+			address: item.formatted_address
+		}
+		return idObj;
 	}
-	getItemName(item) {
+	getLabel(item) {
 		return item.name;
 	}
 	
@@ -61,37 +62,6 @@ class SearchGoogle extends React.Component {
 		  str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 		}
 	  return str.join("&");
-	}
-	  	
-	handleQueryChange(event) {
-		this.setState({query: event.target.value});
-	}
-	handleLocChange(event) {
-		this.setState({loc: event.target.value});
-	}
-		
-	render() {
-		return (
-		  <div>
-			<form onSubmit={this.handleSubmit}>
-			  <SingleInput
-				inputType="text"
-				title="Search for"
-				name="query"
-				placeholder="e.g., casual"
-				onChange={this.handleQueryChange}
-			  />
-			  <SingleInput
-				inputType="text"
-				title="Near"
-				name="location"
-				placeholder="e.g., New York, NY"
-				onChange={this.handleLocChange}
-			  />
-			  <button type="submit">Search</button>
-			</form>        
-		  </div>
- 		);
 	}
 }
 

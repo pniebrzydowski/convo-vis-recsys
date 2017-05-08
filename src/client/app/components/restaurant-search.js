@@ -2,11 +2,15 @@ import React from 'react';
 import AggregateForm from './aggregate-form.js';
 import SearchAggregator from './search-aggregator.js';
 import SearchFoursquare from './search-foursquare.js';
+import SearchGoogle from './search-google.js';
 
 class RestaurantSearch extends React.Component {
 	constructor(props) {
 		super(props);
-		this.searches = [new SearchFoursquare()];
+		this.searches = [
+			new SearchFoursquare(),
+			new SearchGoogle()
+		];
 		this.state = {newQuery: {}};
 		this.handleQueryAdd = this.handleQueryAdd.bind(this);
 	}
@@ -16,7 +20,7 @@ class RestaurantSearch extends React.Component {
 	}
 
 	matchRestaurants(r1, r2) {
-		if(r1.name === r2.name && r1.address === r2.address) {
+		if(r1.name === r2.name) {
 			return true;
 		}
 		return false;

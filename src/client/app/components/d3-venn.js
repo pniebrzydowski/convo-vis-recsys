@@ -64,7 +64,7 @@ class d3Venn {
 
 		// filter out points that aren't included in all the circles
 		var innerPoints = intersectionPoints.filter(function (p) {
-			return containedInCircles(p, circles);
+			return self.containedInCircles(p, circles);
 		});
 
 		var arcArea = 0,
@@ -170,7 +170,7 @@ class d3Venn {
 						y: smallest.y + smallest.radius
 					},
 					p2: {
-						x: smallest.x - SMALL,
+						x: smallest.x - self.SMALL,
 						y: smallest.y + smallest.radius
 					},
 					width: smallest.radius * 2
@@ -196,7 +196,7 @@ class d3Venn {
 	containedInCircles(point, circles) {
 		var self = this;
 		for (var i = 0; i < circles.length; ++i) {
-			if (self.distance(point, circles[i]) > circles[i].radius + SMALL) {
+			if (self.distance(point, circles[i]) > circles[i].radius + self.SMALL) {
 				return false;
 			}
 		}
@@ -314,7 +314,7 @@ class d3Venn {
 	outOfCircles(point, circles) {
 		var self = this;
 		for (var i = 0; i < circles.length; ++i) {
-			if (self.distance(point, circles[i]) < circles[i].radius + SMALL) {
+			if (self.distance(point, circles[i]) < circles[i].radius + self.SMALL) {
 				return false;
 			}
 		}
@@ -398,7 +398,7 @@ class d3Venn {
 								y: s.y + r * Math.sin(a)
 							};
 						attempt++;
-						if (containedInCircles(p, inCircles) && (self.outOfCircles(p, outCircles))) {
+						if (self.containedInCircles(p, inCircles) && (self.outOfCircles(p, outCircles))) {
 							candidate = p;
 							queue.push(p)
 						}

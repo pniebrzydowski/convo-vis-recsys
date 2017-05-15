@@ -6,22 +6,21 @@ class VennDiagram extends React.Component {
 	constructor(props) {
 		super(props);
 
-    this.WIDTH = 600;
-    this.HEIGHT = 600;
-    this.colors = d3.scaleOrdinal(d3.schemeCategory10);
-    this.d3Venn = new d3Venn();
-    this.createChart();
-  }
+		this.WIDTH = 600;
+		this.HEIGHT = 600;
+		this.colors = d3.scaleOrdinal(d3.schemeCategory10);
+		this.d3Venn = new d3Venn();
+	}
 
-  createChart() {
+	createChart() {
 		var self = this;
 
 		var setChar = 'ABCDEFGHIJKLMN';
 		var charFn = i => setChar[i];
 		var setLength = 4;
 		var sets = d3.range(setLength).map(function (d, i) {
-				return setChar[i]
-			});
+			return setChar[i]
+		});
 
 		var dataLength = 180,
 			ii = 0,
@@ -119,9 +118,18 @@ class VennDiagram extends React.Component {
 			});
 	}
 
+	componentWillReceiveProps(nextProps) {
+		var self = this;
+
+		this.createChart();
+	}
+
+
 	render() {
 		return (
-			<svg className="venn-diagram"></svg>
+			<div className="venn-diagram">
+				<svg></svg>
+			</div>
  		);
 	}
 }

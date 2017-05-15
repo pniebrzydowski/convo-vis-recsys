@@ -3,6 +3,7 @@ import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderMulti from './slider-multi.js';
 import AggregateForm from './aggregate-form.js';
+import VennDiagram from "./venn-diagram";
 
 class SearchAggregator extends React.Component {
 	constructor(props) {
@@ -202,10 +203,12 @@ class SearchAggregator extends React.Component {
 					handleWeightChange={this.handleWeightChange}
 				/>
 
+				<div className="results">
 				<StackedBarChart
 					chartData = {this.state.chartData}
 					chartSeries = {this.state.chartSeries}
 				/>
+				</div>
 			</div>
  		);
 	}

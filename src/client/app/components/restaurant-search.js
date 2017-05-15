@@ -18,9 +18,11 @@ class RestaurantSearch extends React.Component {
 	render() {
 		return (
 			<div>
-				<AggregateForm
-					handleQueryAdd={this.handleQueryAdd}
-				/>
+				<div className="search">
+					<AggregateForm
+						handleQueryAdd={this.handleQueryAdd}
+					/>
+				</div>
 				<SearchAggregator
 					searches={this.searches}
 					newQuery={this.state.newQuery}

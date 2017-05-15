@@ -5,12 +5,12 @@ const ValueList = (props) => (
     {props.values.map(function(val) {
       return (
         <li key={val}>
-					{val} 
-					<a 
-						name={val}
-						onClick={props.removeFunc}>
-						Remove
-					</a>
+          <a
+            name={val}
+            onClick={props.removeFunc}>
+            X
+          </a>
+					{val}
         </li>
       );
     })}

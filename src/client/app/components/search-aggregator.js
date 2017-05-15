@@ -192,7 +192,8 @@ class SearchAggregator extends React.Component {
 
 	render() {
 		return (
-			<div className = "visualization">
+			<div>
+				<div className = "attributes">
 				<ValueList
 					values={this.state.queryNames}
 					removeFunc={this.handleQueryRemove}
@@ -202,11 +203,14 @@ class SearchAggregator extends React.Component {
 					values={this.state.queryValues}
 					handleWeightChange={this.handleWeightChange}
 				/>
+				</div>
 
+				<div className="results">
 				<VennDiagram
 					chartData = {this.state.chartData}
 					chartSeries = {this.state.chartSeries}
 				/>
+				</div>
 			</div>
  		);
 	}

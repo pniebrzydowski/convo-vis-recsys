@@ -13,7 +13,7 @@ const InputList = (props) => (
             onChange={props.onChange}/>
           <a
             name={field.name}
-            onClick={props.removeFunc}>Remove
+            onClick={props.removeFunc}>X
           </a>
         </li>
       );

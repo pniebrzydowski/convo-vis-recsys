@@ -4,21 +4,65 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF8">
 	
 	<style>
-		.weight-sliders {
-			text-align: left;
+        .search, .attributes {
+            float: left;
+            margin-right: 25px;
+            width: 285px;
+        }
+
+        .search form {
+            text-align: left;
+        }
+        .search .form-group {
+            display: block;
+            padding-bottom: 10px;
+            vertical-align: middle;
+        }
+        .search label {
+            display: inline-block;
+            margin-right: 5px;
+            width: 90px;
+        }
+        .search input {
+            width: 190px;
+        }
+        .search button {
+            width: 100%;
+        }
+
+        .attributes {
+            clear: both;
+        }
+
+        .attributes ul {
+            float: left;
+            list-style: none outside;
+            margin-right: 5px;
+            padding-left: 0;
+            width: 90px;
+        }
+        .attributes li {
+            display: block;
+            height: 32px;
+            padding: 4px 0;
+        }
+        .attributes li a {
+            color: #999;
+            cursor: pointer;
+            display: block;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .weight-sliders {
+			margin: 1em 0;
 		}
 		.slider {
 			border: 1px solid grey;
 			display: inline-block;
-			height: 50px;
-			margin: 0 79px 0 5px;
-			width: 16px;
-		}
-		.legend {
-			text-align: left !important;
-		}
-		.legend .legend {
-			width: 92px;
+			height: 12px;
+			margin: 5px 0 21px;
+			width: 188px;
 		}
 		.handle {
 			font-size: 0.9em;
@@ -30,71 +74,15 @@
 		.handle.active {
 			background-color: grey;
 		}
-		.bar {
-			position: relative;
-			background: #ddd;
-		}
-		.bar.bar-0 {
-			background: rgb(31, 119, 180);
-		}
-		.bar.bar-1 {
-			background: rgb(255, 127, 14);
-		}
-		.bar.bar-2 {
-			background: rgb(44, 160, 44);
-		}
-		.bar.bar-3 {
-			background: rgb(214, 39, 40);
-		}
-		.bar.bar-4 {
-			background: rgb(148, 103, 189);
-		}
 		.slider .bar {
-			top: 20px;
-			height: 10px;
+			left: 20px;
+			width: 10px;
 		}
 		.slider .handle {
-			left: -4px;
-			width: 24px;
-			height: 8px;
-			line-height: 30px;
-		}
-		#horizontal-0,
-		#horizontal-1, #horizontal-2, #horizontal-3,
-		#horizontal-2 .bar.bar-2 {
-			background: #ddd;
-		}
-		
-		.visualization {
-			margin: 0 auto;
-			text-align: center;
-			width: 800px;
-		}
-		
-		ul {
-			list-style: none outside;
-		}
-		li {
-			border: 1px solid #999;
-			display: inline-block;
-			margin-right: 5px;
-		}
-		li a {
-			color: #999;
-			cursor: pointer;
-			margin-left: 5px;
-		}
-		
-		form {
-			text-align: center;
-		}
-		.form-group {
-			display: inline;
-			margin-right: 10px;
-			vertical-align: middle;
-		}
-		label {
-			margin-right: 5px;
+			top: -7px;
+			height: 28px;
+			width: 8px;
+			line-height: 40px;
 		}
 	</style>
 </head>

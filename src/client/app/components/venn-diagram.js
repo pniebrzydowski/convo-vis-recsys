@@ -55,20 +55,6 @@ class VennDiagram extends React.Component {
 			// .attr('fill', function(d,i) {return self.colors(i)} )
 			.attr('opacity', 0.25)
 
-		venn.append("text")
-			.attr("class", "label")
-			.text(function (d) {
-				return d.__key__;
-			})
-			.attr("text-anchor", "middle")
-			.attr("dy", ".35em")
-			.attr("x", function (d) {
-				return d.center.x
-			})
-			.attr("y", function (d) {
-				return d.center.y
-			});
-
 		var points = venn.selectAll("circle.node")
 			.data(function (d) {
 				return d.nodes
@@ -84,20 +70,6 @@ class VennDiagram extends React.Component {
 				return d.y
 			})
 			.attr('r', 3)
-
-		venn.append('circle')
-			.attr('class', 'inner')
-			.attr('fill', 'grey')
-			.attr('opacity', 0.2)
-			.attr("cx", function (d) {
-				return d.center.x
-			})
-			.attr("cy", function (d) {
-				return d.center.y
-			})
-			.attr('r', function (d) {
-				return d.innerRadius
-			});
 	}
 
 	componentWillReceiveProps(nextProps) {

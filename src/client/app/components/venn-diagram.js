@@ -12,10 +12,16 @@ class VennDiagram extends React.Component {
 		this.d3Venn = new d3Venn();
 	}
 
-	createChart() {
+	createChart(nextProps) {
 		var self = this;
 
-		var setChar = 'ABCDEFGHIJKLMN';
+		console.log(nextProps);
+		if(nextProps.sets.length === 0 ) return;
+
+		var sets = nextProps.sets;
+		var data = nextProps.chartData;
+
+/*		var setChar = 'ABCDEFGHIJKLMN';
 		var charFn = i => setChar[i];
 		var setLength = 4;
 		var sets = d3.range(setLength).map(function (d, i) {
@@ -40,7 +46,7 @@ class VennDiagram extends React.Component {
 					name: 'set_' + ii++
 				}
 			});
-
+*/
 		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT]),
 
 			ld = l.nodes(data);
@@ -121,7 +127,7 @@ class VennDiagram extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		var self = this;
 
-		this.createChart();
+		this.createChart(nextProps);
 	}
 
 

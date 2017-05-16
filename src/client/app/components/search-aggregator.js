@@ -9,7 +9,6 @@ class SearchAggregator extends React.Component {
     
 		this.state = {
 			chartData: [],
-			chartSeries: [],
 			queryNames: [],
 			queryValues: []
 		};
@@ -47,10 +46,11 @@ class SearchAggregator extends React.Component {
     for(let i=0; i<results.length; i++) {
       let found = false;
       let dataObj = {
-        id: idFn(results[i]),
-        name: nameFn(results[i]),
-        queryRanks: {}
-      };
+				id: idFn(results[i]),
+				name: nameFn(results[i]),
+				queryRanks: {},
+				set: []
+			};
       
       for(let j=0; j<self.resultItems.length; j++) {
         if(self.resultItems[j].id === idFn(results[i])) {
@@ -129,10 +129,11 @@ class SearchAggregator extends React.Component {
 		for(let i=0; i<allVenues.length; i++) {
 			let score = 0;
 			let ranks = allVenues[i].queryRanks;
+			allVenues[i].set = [];
 			
 			for(let j=0; j<self.queries.length; j++) {
 				let query = self.queries[j].name;
-				if(!ranks[query]) {
+				if (!ranks[query]) {
 					allVenues[i][query] = 0;
 				} else {
 					let queryWeight = self.queries[j].weight / totalWeight;
@@ -140,16 +141,17 @@ class SearchAggregator extends React.Component {
 					//let weightedScore = self.queries[j].weight / 6 * ranks[query];
 					allVenues[i][query] = weightedScore;
 					score += weightedScore;
+					allVenues[i].set.push(query);
 				}
 			}
-			
+
 			allVenues[i].totalScore = score;
 		}
     allVenues.sort(function(a,b) {
       return b.totalScore - a.totalScore;
     });
     
-    return allVenues.slice(0,10).reverse();
+    return allVenues.reverse();
   }
 	
 	getQueries() {
@@ -179,7 +181,6 @@ class SearchAggregator extends React.Component {
     
 		let qInfo = self.getQueries();
 		let newState = {
-      chartSeries: qInfo.seriesArray,
       chartData: self.getTopVenues(),
 			queryNames: qInfo.names,
 			queryValues: qInfo.weights
@@ -206,7 +207,8 @@ class SearchAggregator extends React.Component {
 				<div className="results">
 				<VennDiagram
 					chartData = {this.state.chartData}
-					chartSeries = {this.state.chartSeries}
+					sets = {this.state.queryNames}
+					queryValues = {this.state.queryValues}
 				/>
 				</div>
 			</div>

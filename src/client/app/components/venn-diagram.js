@@ -10,52 +10,28 @@ class VennDiagram extends React.Component {
 		this.HEIGHT = 600;
 		this.colors = d3.scaleOrdinal(d3.schemeCategory10);
 		this.d3Venn = new d3Venn();
+		this.svg = null;
 	}
 
 	createChart(nextProps) {
 		var self = this;
 
-		console.log(nextProps);
 		if(nextProps.sets.length === 0 ) return;
 
 		var sets = nextProps.sets;
 		var data = nextProps.chartData;
-
-/*		var setChar = 'ABCDEFGHIJKLMN';
-		var charFn = i => setChar[i];
-		var setLength = 4;
-		var sets = d3.range(setLength).map(function (d, i) {
-			return setChar[i]
-		});
-
-		var dataLength = 180,
-			ii = 0,
-			data = d3.range(dataLength).map((d, i) => {
-				var l = Math.floor((Math.random() * setLength / 3) + 1),
-					set = [],
-					c,
-					i;
-				for (i = -1; ++i < l;) {
-					c = charFn(Math.floor((Math.random() * setLength)));
-					if (set.indexOf(c) == -1) {
-						set.push(c)
-					}
-				}
-				return {
-					set: set,
-					name: 'set_' + ii++
-				}
-			});
-*/
 		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT]),
-
 			ld = l.nodes(data);
 
-		var svg = d3.select('svg')
-			.attr('width', this.WIDTH)
-			.attr('height', this.HEIGHT);
+		if(!this.svg) {
+			this.svg = d3.select('svg')
+				.attr('width', this.WIDTH)
+				.attr('height', this.HEIGHT);
+		}
 
-		var nodes = svg.selectAll("g")
+		self.svg.selectAll("*").remove();
+
+		var nodes = self.svg.selectAll("g")
 			.data(l.sets().values(), function (d) {
 				return d.__key__;
 			});

@@ -20,8 +20,20 @@ class VennDiagram extends React.Component {
 
 		var sets = nextProps.sets;
 		var data = nextProps.chartData;
-		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT]),
-			ld = l.nodes(data);
+		var totalWt = 0;
+		var queryWts = {};
+		for(var i=0; i<nextProps.queryValues.length; i++) {
+			var q = nextProps.queryValues[i];;
+			totalWt += q.weight;
+			queryWts[q.name] = q.weight;
+		}
+		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT]).setsSize(function(set) {
+			if(queryWts[set.__key__]) {
+				return nextProps.queryValues.length * set.size * queryWts[set.__key__] / totalWt;
+			}
+			else return set.size;
+		});
+		var ld = l.nodes(data);
 
 		if(!this.svg) {
 			this.svg = d3.select('svg')
@@ -72,6 +84,10 @@ class VennDiagram extends React.Component {
 				return d.r;
 			})
 			.attr('class', 'node')
+			.append('title')
+			.text(function(d){
+					return d.data.name;
+				});
 	}
 
 	componentWillReceiveProps(nextProps) {

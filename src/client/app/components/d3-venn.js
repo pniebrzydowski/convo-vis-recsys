@@ -2158,7 +2158,7 @@ class d3Venn {
 			});
 			// reset the size for each set.
 			sets.each(function (v, k, set) {
-				v.size = size(v.size);
+				v.size = size(v);
 			})
 			// sets = sets.values();
 
@@ -2166,8 +2166,8 @@ class d3Venn {
 			return sets;
 		}
 
-		function setsSize(size) {
-			return size;
+		function setsSize(set) {
+			return set.size;
 		}
 
 		// data accessors

@@ -57,19 +57,21 @@ class VennDiagram extends React.Component {
 
 		var points = venn.selectAll("circle.node")
 			.data(function (d) {
-				return d.nodes
+				return d.nodes;
 			})
 			.enter()
 
 		points.append('circle')
+			.attr('cx', function(d){
+				return d.x;
+			})
+			.attr('cy', function(d){
+				return d.y;
+			})
+			.attr('r', function(d){
+				return d.r;
+			})
 			.attr('class', 'node')
-			.attr("cx", function (d) {
-				return d.x
-			})
-			.attr("cy", function (d) {
-				return d.y
-			})
-			.attr('r', 3)
 	}
 
 	componentWillReceiveProps(nextProps) {

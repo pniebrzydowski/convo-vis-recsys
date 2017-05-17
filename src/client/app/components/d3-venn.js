@@ -333,9 +333,19 @@ class d3Venn {
 			// function d3.layout.pack(set, valueFn) {
 			var innerRadius = set.innerRadius,
 				center = set.center,
-				children = set.nodes,
 				x = center.x - innerRadius,
 				y = center.y - innerRadius;
+
+				var pack = d3.pack().size([innerRadius*2, innerRadius*2]);
+				var root = d3.hierarchy(set, function(d){
+					return d.nodes;
+				}).sum(function(v){
+					return v.totalScore;
+				}).sort(function(a,b) {
+					return b.totalScore - a.totalScore;
+				});
+				pack(root);
+				set.nodes = root.descendants().slice(1);
 
 			/*self.applier(self.pack(), packingConfig)
 				.size([innerRadius * 2, innerRadius * 2])
@@ -343,8 +353,8 @@ class d3Venn {
 					children: children
 				});*/
 			// translate the notes to the center
-			if (children) {
-				children.forEach(function (n) {
+			if (set.nodes) {
+				set.nodes.forEach(function (n) {
 					n.x += x;
 					n.y += y;
 				});

@@ -22,22 +22,25 @@ class VennDiagram extends React.Component {
 		var data = nextProps.chartData;
 		var totalWt = 0;
 		var queryWts = {};
-		for(var i=0; i<nextProps.queryValues.length; i++) {
+		var numQueries = nextProps.queryValues.length;
+		for(var i=0; i<numQueries; i++) {
 			var q = nextProps.queryValues[i];;
 			totalWt += q.weight;
 			queryWts[q.name] = q.weight;
 		}
+		var setLength = sets.length;
 		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT]).setsSize(function(set) {
 			if(queryWts[set.__key__]) {
-				return nextProps.queryValues.length * set.size * queryWts[set.__key__] / totalWt;
+				var adj = numQueries / setLength;
+				return  adj * set.size * queryWts[set.__key__] / totalWt;
 			}
 			else {
-				var sets = set.__key__.split(',');
+				var subsets = set.__key__.split(',');
 				var weightSum = 0;
-				for(var i=0; i<sets.length; i++) {
+				for(var i=0; i<subsets.length; i++) {
 					weightSum +=  queryWts[sets[i]] / totalWt;
 				}
-				return weightSum * set.size;
+				return weightSum * set.size * setLength / subsets.length / numQueries;
 			}
 		});
 		var ld = l.nodes(data);
@@ -88,12 +91,12 @@ class VennDiagram extends React.Component {
 				return d.y;
 			})
 			.attr('r', function(d){
-				return d.r;
+				return d.r * d.data.set.length / numQueries;
 			})
 			.attr('class', 'node')
 			.append('title')
 			.text(function(d){
-					return d.data.name;
+					return d.data.name + "(" + d.data.totalScore + ")";
 				});
 	}
 

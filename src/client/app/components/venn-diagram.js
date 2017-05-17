@@ -31,7 +31,14 @@ class VennDiagram extends React.Component {
 			if(queryWts[set.__key__]) {
 				return nextProps.queryValues.length * set.size * queryWts[set.__key__] / totalWt;
 			}
-			else return set.size;
+			else {
+				var sets = set.__key__.split(',');
+				var weightSum = 0;
+				for(var i=0; i<sets.length; i++) {
+					weightSum +=  queryWts[sets[i]] / totalWt;
+				}
+				return weightSum * set.size;
+			}
 		});
 		var ld = l.nodes(data);
 

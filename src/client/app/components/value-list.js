@@ -4,7 +4,8 @@ const ValueList = (props) => (
   <ul>
     {props.values.map(function(val) {
       return (
-        <li key={val}>
+        <li key={val} id={val}>
+          <span className="legend-icon"></span>
           <a
             name={val}
             onClick={props.removeFunc}>

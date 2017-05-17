@@ -11,6 +11,7 @@ class VennDiagram extends React.Component {
 		this.colors = d3.scaleOrdinal(d3.schemeCategory10);
 		this.d3Venn = new d3Venn();
 		this.svg = null;
+		this.sets = [];
 	}
 
 	createChart(nextProps) {
@@ -19,6 +20,7 @@ class VennDiagram extends React.Component {
 		if(nextProps.sets.length === 0 ) return;
 
 		var sets = nextProps.sets;
+		this.sets = sets;
 		var data = nextProps.chartData;
 		var totalWt = 0;
 		var queryWts = {};
@@ -68,6 +70,11 @@ class VennDiagram extends React.Component {
 			.attr('fill', function (d, i) {
 				return self.colors(i)
 			})
+			.each(function(d, i) {
+				if(d.sets.length === 1) {
+					d3.select("#"+d.sets[0]+" .legend-icon").style("background-color", self.colors(i));
+				}
+			});
 
 
 		venn.append("path")

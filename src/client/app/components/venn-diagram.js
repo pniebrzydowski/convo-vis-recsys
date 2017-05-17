@@ -54,6 +54,7 @@ class VennDiagram extends React.Component {
 		}
 
 		self.svg.selectAll("*").remove();
+		d3.selectAll(".tooltip").remove();
 
 		var nodes = self.svg.selectAll("g")
 			.data(l.sets().values(), function (d) {
@@ -90,6 +91,12 @@ class VennDiagram extends React.Component {
 			})
 			.enter()
 
+		// Define 'div' for tooltips
+		var div = d3.select("body")
+			.append("div")
+			.attr("class", "tooltip")
+			.style("opacity", 0);
+
 		points.append('circle')
 			.attr('cx', function(d){
 				return d.x;
@@ -101,10 +108,21 @@ class VennDiagram extends React.Component {
 				return d.r * d.data.set.length / numQueries;
 			})
 			.attr('class', 'node')
-			.append('title')
-			.text(function(d){
-					return d.data.name + "(" + d.data.totalScore + ")";
-				});
+			.attr('opacity', 0.7)
+			.on("click", function(d) {
+				var elm = d3.select(this);
+				d3.selectAll("circle.node").attr("opacity", 0.7);
+				elm.attr("opacity", 1);
+				div.transition()
+					.duration(500)
+					.style("opacity", 0);
+				div.transition()
+					.duration(200)
+					.style("opacity", .9);
+				div.html(d.data.name)
+					.style("left", (d3.event.pageX - 50) + "px")
+					.style("top", (d3.event.pageY) + "px");
+			});
 	}
 
 	componentWillReceiveProps(nextProps) {

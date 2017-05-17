@@ -110,6 +110,7 @@ class VennDiagram extends React.Component {
 			.attr('class', 'node')
 			.attr('opacity', 0.7)
 			.on("click", function(d) {
+				d3.event.stopPropagation();
 				var elm = d3.select(this);
 				d3.selectAll("circle.node").attr("opacity", 0.7);
 				elm.attr("opacity", 1);
@@ -123,6 +124,14 @@ class VennDiagram extends React.Component {
 					.style("left", (d3.event.pageX - 50) + "px")
 					.style("top", (d3.event.pageY) + "px");
 			});
+
+		d3.select("body").on("click", function(d) {
+			d3.selectAll("circle.node").attr("opacity", 0.7);
+			d3.selectAll(".tooltip")
+				.style("opacity", 0)
+				.style("left", (-1000) + "px")
+				.style("top", (-1000) + "px");
+		});
 	}
 
 	componentWillReceiveProps(nextProps) {

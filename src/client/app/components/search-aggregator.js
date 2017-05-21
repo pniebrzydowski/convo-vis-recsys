@@ -24,6 +24,16 @@ class SearchAggregator extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		var self = this;
 
+		if(self.queries.length >= 4) {
+			alert("Sorry, a maximum of 4 attributes is allowed");
+			return false;
+		}
+		var validQuery = ( self.state.queryNames.indexOf( nextProps.newQuery.query ) === -1);
+		if( !validQuery ) {
+			alert("Sorry, this attribute has already been added. Please try a new one.");
+			return false;
+		}
+
 		let resultCount = 0;
 		for(let i=0; i<self.searches.length; i++) {
 			self.searches[i].getResults(nextProps.newQuery).then(function(result){

@@ -5,6 +5,7 @@ class AggregateForm extends React.Component {
 	constructor(props) {
 	super(props);
 		this.addQuery = props.handleQueryAdd;
+		this.formSubmitted = false;
     this.state = {
       query: null,
       loc: null
@@ -17,6 +18,7 @@ class AggregateForm extends React.Component {
 	
 	handleSubmit(event) {
 		var self = this;
+		self.formSubmitted = true;
 		event.preventDefault();
 		self.addQuery(self.state.query,self.state.loc);
 	}
@@ -34,18 +36,19 @@ class AggregateForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <SingleInput
             inputType="text"
-            title="Search for"
-            name="query"
-            placeholder="e.g., casual"
-            onChange={this.handleQueryChange}
-          />
-          <SingleInput
-            inputType="text"
             title="Near"
             name="location"
             placeholder="e.g., New York, NY"
             onChange={this.handleLocChange}
+						disabled={this.formSubmitted}
           />
+					<SingleInput
+						inputType="text"
+						title="Search for"
+						name="query"
+						placeholder="e.g., casual"
+						onChange={this.handleQueryChange}
+					/>
           <button type="submit">Search</button>
         </form>        
       </div>

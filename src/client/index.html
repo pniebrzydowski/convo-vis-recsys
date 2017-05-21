@@ -13,6 +13,13 @@
         .search form {
             text-align: left;
         }
+        .search [disabled] {
+            background: none;
+            border: none;
+        }
+        .search input:-webkit-autofill[disabled] {
+            -webkit-box-shadow: 0 0 0 30px white inset;
+        }
         .search .form-group {
             display: block;
             padding-bottom: 10px;

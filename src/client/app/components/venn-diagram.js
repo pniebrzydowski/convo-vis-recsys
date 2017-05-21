@@ -6,12 +6,11 @@ class VennDiagram extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.WIDTH = 600;
-		this.HEIGHT = 600;
+		this.WIDTH = 800;
+		this.HEIGHT = 800;
 		this.colors = d3.scaleOrdinal(d3.schemeCategory10);
 		this.d3Venn = new d3Venn();
 		this.svg = null;
-		this.sets = [];
 	}
 
 	createChart(nextProps) {
@@ -20,31 +19,48 @@ class VennDiagram extends React.Component {
 		if(nextProps.sets.length === 0 ) return;
 
 		var sets = nextProps.sets;
-		this.sets = sets;
 		var data = nextProps.chartData;
 		var totalWt = 0;
 		var queryWts = {};
 		var numQueries = nextProps.queryValues.length;
 		for(var i=0; i<numQueries; i++) {
-			var q = nextProps.queryValues[i];;
+			var q = nextProps.queryValues[i];
 			totalWt += q.weight;
 			queryWts[q.name] = q.weight;
 		}
 		var setLength = sets.length;
-		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT]).setsSize(function(set) {
-			if(queryWts[set.__key__]) {
-				var adj = numQueries / setLength;
-				return  adj * set.size * queryWts[set.__key__] / totalWt;
-			}
-			else {
-				var subsets = set.__key__.split(',');
-				var weightSum = 0;
-				for(var i=0; i<subsets.length; i++) {
-					weightSum +=  queryWts[sets[i]] / totalWt;
+		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT])
+			.setsSize(function(set) {
+				//set.nodes = set.nodes.reverse().slice(0,10);
+				/*
+				var score = 0;
+				for(var i=0; i<set.nodes.length; i++){
+					score += set.nodes[i].totalScore;
 				}
-				return weightSum * set.size * setLength / subsets.length / numQueries;
-			}
-		});
+				var len = 0;
+				if(!queryWts[set.__key__]) {
+					var subsets = set.__key__.split(',');
+					len = subsets.length;
+				} else {
+					len = 1;
+				}
+				score = score * (1 + numQueries - len);
+				console.log(set.__key__," : ",score);
+				return score;
+				*/
+				if(queryWts[set.__key__]) {
+					var adj = numQueries / setLength;
+					return  adj * set.size * queryWts[set.__key__] / totalWt;
+				}
+				else {
+					var subsets = set.__key__.split(',');
+					var weightSum = 0;
+					for(var i=0; i<subsets.length; i++) {
+						weightSum +=  queryWts[sets[i]] / totalWt;
+					}
+					return weightSum * set.size * setLength / subsets.length / numQueries;
+				}
+			});
 		var ld = l.nodes(data);
 
 		if(!this.svg) {
@@ -105,7 +121,10 @@ class VennDiagram extends React.Component {
 				return d.y;
 			})
 			.attr('r', function(d){
-				return d.r * d.data.set.length / numQueries;
+				var radius = d.r;
+				radius = radius * d.data.set.length / numQueries;
+//			var avgR = d.parent.r / d.parent.children.length;
+				return radius;
 			})
 			.attr('class', 'node')
 			.attr('opacity', 0.7)
@@ -120,7 +139,7 @@ class VennDiagram extends React.Component {
 				div.transition()
 					.duration(200)
 					.style("opacity", .9);
-				div.html(d.data.name)
+				div.html(d.data.name + "<br>" + d.data.totalScore)
 					.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
 					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
 			})
@@ -134,7 +153,7 @@ class VennDiagram extends React.Component {
 					div.transition()
 						.duration(200)
 						.style("opacity", .9);
-					div.html(d.data.name)
+					div.html(d.data.name + "<br>" + d.data.totalScore)
 						.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
 						.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
 				}

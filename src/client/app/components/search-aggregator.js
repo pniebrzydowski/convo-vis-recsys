@@ -2,8 +2,6 @@ import React from 'react';
 import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
 import SliderMulti from './slider-multi.js';
-import AggregateForm from './aggregate-form.js';
-import VennDiagram from "./venn-diagram";
 
 class SearchAggregator extends React.Component {
 	constructor(props) {

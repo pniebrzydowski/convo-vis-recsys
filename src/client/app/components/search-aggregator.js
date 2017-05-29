@@ -148,11 +148,14 @@ class SearchAggregator extends React.Component {
 					let queryWeight = self.queries[j].weight / totalWeight;
 					let weightedScore = 100 * queryWeight * ranks[query];
 					//let weightedScore = self.queries[j].weight / 6 * ranks[query];
-					allVenues[i][query] = weightedScore;
+					allVenues[i][query] = Math.round(weightedScore);
 					score += weightedScore;
 				}
 			}
-			
+
+			score = Math.round(score);
+			if(score > 100) score = 100;
+
 			allVenues[i].totalScore = score;
 		}
     allVenues.sort(function(a,b) {

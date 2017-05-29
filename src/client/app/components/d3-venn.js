@@ -336,6 +336,7 @@ class d3Venn {
 				x = center.x - innerRadius,
 				y = center.y - innerRadius;
 
+				console.log(set.__key__," : ",innerRadius);
 				var pack = d3.pack().size([innerRadius*2, innerRadius*2]);
 				var root = d3.hierarchy(set, function(d){
 					return d.nodes;

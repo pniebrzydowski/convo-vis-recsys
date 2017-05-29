@@ -28,10 +28,15 @@ class VennDiagram extends React.Component {
 			totalWt += q.weight;
 			queryWts[q.name] = q.weight;
 		}
-		var setLength = sets.length;
 		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT])
 			.setsSize(function(set) {
-				//set.nodes = set.nodes.reverse().slice(0,10);
+				/*set.nodes = set.nodes.reverse().slice(0,10);
+				var len = 1;
+				if(!queryWts[set.__key__]) {
+					var subsets = set.__key__.split(',');
+					len = subsets.length;
+				}
+				return 1000 / len;*/
 				/*
 				var score = 0;
 				for(var i=0; i<set.nodes.length; i++){
@@ -48,9 +53,9 @@ class VennDiagram extends React.Component {
 				console.log(set.__key__," : ",score);
 				return score;
 				*/
+				var size;
 				if(queryWts[set.__key__]) {
-					var adj = numQueries / setLength;
-					return  adj * set.size * queryWts[set.__key__] / totalWt;
+					size = set.size * queryWts[set.__key__] / totalWt;
 				}
 				else {
 					var subsets = set.__key__.split(',');
@@ -58,8 +63,9 @@ class VennDiagram extends React.Component {
 					for(var i=0; i<subsets.length; i++) {
 						weightSum +=  queryWts[sets[i]] / totalWt;
 					}
-					return weightSum * set.size * setLength / subsets.length / numQueries;
+					size = weightSum * set.size / subsets.length;
 				}
+				return size;
 			});
 		var ld = l.nodes(data);
 
@@ -122,7 +128,7 @@ class VennDiagram extends React.Component {
 			})
 			.attr('r', function(d){
 				var radius = d.r;
-				radius = radius * d.data.set.length / numQueries;
+//				radius = radius * d.data.set.length / numQueries;
 //			var avgR = d.parent.r / d.parent.children.length;
 				return radius;
 			})

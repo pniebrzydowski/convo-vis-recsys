@@ -30,8 +30,8 @@ class VennDiagram extends React.Component {
 		}
 		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT])
 			.setsSize(function(set) {
-				/*set.nodes = set.nodes.reverse().slice(0,10);
-				var len = 1;
+				set.nodes = set.nodes.reverse().slice(0,10);
+				/*var len = 1;
 				if(!queryWts[set.__key__]) {
 					var subsets = set.__key__.split(',');
 					len = subsets.length;

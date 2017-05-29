@@ -63,9 +63,9 @@ class VennDiagram extends React.Component {
 					for(var i=0; i<subsets.length; i++) {
 						weightSum +=  queryWts[sets[i]] / totalWt;
 					}
-					size = weightSum * set.size / subsets.length;
+					size = weightSum * set.size;
 				}
-				return size;
+				return size / numQueries;
 			});
 		var ld = l.nodes(data);
 

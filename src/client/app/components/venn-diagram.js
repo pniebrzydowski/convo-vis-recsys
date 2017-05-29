@@ -145,7 +145,7 @@ class VennDiagram extends React.Component {
 				div.transition()
 					.duration(200)
 					.style("opacity", .9);
-				div.html(d.data.name + "<br>" + d.data.totalScore)
+				div.html(self.getTooltip(d))
 					.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
 					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
 			})
@@ -159,7 +159,7 @@ class VennDiagram extends React.Component {
 					div.transition()
 						.duration(200)
 						.style("opacity", .9);
-					div.html(d.data.name + "<br>" + d.data.totalScore)
+					div.html(self.getTooltip(d))
 						.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
 						.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
 				}
@@ -173,6 +173,13 @@ class VennDiagram extends React.Component {
 				.style("left", (-1000) + "px")
 				.style("top", (-1000) + "px");
 		});
+	}
+
+	getTooltip(d) {
+		var tooltip =
+			d.data.name + "<br>" +
+			Math.round(d.data.totalScore);
+		return tooltip;
 	}
 
 	componentWillReceiveProps(nextProps) {

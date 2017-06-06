@@ -30,29 +30,6 @@ class VennDiagram extends React.Component {
 		}
 		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT])
 			.setsSize(function(set) {
-				set.nodes = set.nodes.reverse().slice(0,10);
-				/*var len = 1;
-				if(!queryWts[set.__key__]) {
-					var subsets = set.__key__.split(',');
-					len = subsets.length;
-				}
-				return 1000 / len;*/
-				/*
-				var score = 0;
-				for(var i=0; i<set.nodes.length; i++){
-					score += set.nodes[i].totalScore;
-				}
-				var len = 0;
-				if(!queryWts[set.__key__]) {
-					var subsets = set.__key__.split(',');
-					len = subsets.length;
-				} else {
-					len = 1;
-				}
-				score = score * (1 + numQueries - len);
-				console.log(set.__key__," : ",score);
-				return score;
-				*/
 				var size;
 				if(queryWts[set.__key__]) {
 					size = set.size * queryWts[set.__key__] / totalWt;
@@ -63,9 +40,10 @@ class VennDiagram extends React.Component {
 					for(var i=0; i<subsets.length; i++) {
 						weightSum +=  queryWts[sets[i]] / totalWt;
 					}
-					size = weightSum * set.size;
+					size = weightSum * 10 / subsets.length / subsets.length;
 				}
-				return size / numQueries;
+				set.nodes = set.nodes.reverse().slice(0,10);
+				return size;
 			});
 		var ld = l.nodes(data);
 
@@ -91,7 +69,7 @@ class VennDiagram extends React.Component {
 					(d.sets.length == 1 ? "circle" : "intersection");
 			})
 			.attr('fill', function (d, i) {
-				return self.colors(i)
+				return self.colors(i);
 			})
 			.each(function(d, i) {
 				if(d.sets.length === 1) {
@@ -105,7 +83,20 @@ class VennDiagram extends React.Component {
 				return d.d(1)
 			})
 			// .attr('fill', function(d,i) {return self.colors(i)} )
-			.attr('opacity', 0.25)
+			.attr('fill', 'none')
+			.attr('stroke', function (d, i) {
+				if(d.sets.length === 1) {
+					return self.colors(i);
+				}
+				return 'none';
+			})
+			.attr('stroke-width', 3);
+/*			.attr('opacity', function(d){
+				if(d.sets.length > 1) {
+					return 0;
+				}
+				return 0.2;
+			})*/
 
 		var points = venn.selectAll("circle.node")
 			.data(function (d) {
@@ -130,21 +121,25 @@ class VennDiagram extends React.Component {
 				var radius = d.r;
 //				radius = radius * d.data.set.length / numQueries;
 //			var avgR = d.parent.r / d.parent.children.length;
-				return radius;
+				return 10;
 			})
 			.attr('class', 'node')
-			.attr('opacity', 0.7)
+			.attr('fill', '#000')
+			.attr('opacity', function(d){
+				if(d.data.totalScore < 20) return 0;
+				return d.data.totalScore / 100;
+			})
 			.on("click", function(d) {
 				d3.event.stopPropagation();
 				var elm = d3.select(this);
-				d3.selectAll("circle.node").attr("opacity", 0.7);
-				elm.attr("opacity", 1);
+//				d3.selectAll("circle.node").attr("opacity", 1);
+//				elm.attr("opacity", 0.7);
 				div.transition()
 					.duration(500)
 					.style("opacity", 0);
 				div.transition()
 					.duration(200)
-					.style("opacity", .9);
+					.style("opacity", .7);
 				div.html(self.getTooltip(d))
 					.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
 					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
@@ -152,13 +147,13 @@ class VennDiagram extends React.Component {
 			.each(function(d, i) {
 				if(d.data.name === nextProps.chartData[nextProps.chartData.length - 1].name) {
 					var elm = d3.select(this);
-					elm.attr("opacity", 1);
+//					elm.attr("opacity", 0.7);
 					div.transition()
 						.duration(500)
 						.style("opacity", 0);
 					div.transition()
 						.duration(200)
-						.style("opacity", .9);
+						.style("opacity", .7);
 					div.html(self.getTooltip(d))
 						.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
 						.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
@@ -167,7 +162,7 @@ class VennDiagram extends React.Component {
 		;
 
 		d3.select("body").on("click", function(d) {
-			d3.selectAll("circle.node").attr("opacity", 0.7);
+//			d3.selectAll("circle.node").attr("opacity", 1);
 			d3.selectAll(".tooltip")
 				.style("opacity", 0)
 				.style("left", (-1000) + "px")

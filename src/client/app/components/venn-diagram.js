@@ -121,12 +121,12 @@ class VennDiagram extends React.Component {
 				var radius = d.r;
 //				radius = radius * d.data.set.length / numQueries;
 //			var avgR = d.parent.r / d.parent.children.length;
+				if(d.data.totalScore < 20) return 0;
 				return 10;
 			})
 			.attr('class', 'node')
 			.attr('fill', '#000')
 			.attr('opacity', function(d){
-				if(d.data.totalScore < 20) return 0;
 				return d.data.totalScore / 100;
 			})
 			.on("click", function(d) {

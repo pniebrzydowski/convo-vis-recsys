@@ -42,7 +42,7 @@ class SearchAggregator extends React.Component {
 				if(resultCount === self.searches.length) {
 					self.queries.push({
 						name: nextProps.newQuery.query,
-						weight: 5
+						weight: 6
 					});
 					self.drawChart();
 				}

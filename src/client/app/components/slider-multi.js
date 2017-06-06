@@ -31,7 +31,7 @@ class SliderMulti extends React.Component {
 						<ReactSlider
 							key={val.name}
 							name={val.name}
-							min={1}
+							min={2}
 							max={10}
 							orientation={"horizontal"}
 							value={val.weight}

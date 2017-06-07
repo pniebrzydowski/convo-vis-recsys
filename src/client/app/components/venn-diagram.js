@@ -129,37 +129,33 @@ class VennDiagram extends React.Component {
 			.on("click", function(d) {
 				d3.event.stopPropagation();
 				var elm = d3.select(this);
-//				d3.selectAll("circle.node").attr("opacity", 1);
-//				elm.attr("opacity", 0.7);
 				div.transition()
 					.duration(500)
 					.style("opacity", 0);
 				div.transition()
 					.duration(200)
-					.style("opacity", .7);
+					.style("opacity", .9);
 				div.html(self.getTooltip(d))
 					.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
-					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
+					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 12) + "px");
 			})
 			.each(function(d, i) {
 				if(d.data.name === nextProps.chartData[nextProps.chartData.length - 1].name) {
 					var elm = d3.select(this);
-//					elm.attr("opacity", 0.7);
 					div.transition()
 						.duration(500)
 						.style("opacity", 0);
 					div.transition()
 						.duration(200)
-						.style("opacity", .7);
+						.style("opacity", .9);
 					div.html(self.getTooltip(d))
 						.style("left", (parseFloat(elm.attr("cx")) + 267.5) + "px")
-						.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 8) + "px");
+						.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 12) + "px");
 				}
 			});
 		;
 
 		d3.select("body").on("click", function(d) {
-//			d3.selectAll("circle.node").attr("opacity", 1);
 			d3.selectAll(".tooltip")
 				.style("opacity", 0)
 				.style("left", (-1000) + "px")

@@ -157,10 +157,6 @@ class SearchAggregator extends React.Component {
 		for(let i=0; i<self.queries.length; i++) {
 			queries.names.push(self.queries[i].name);
 			queries.weights.push({name: self.queries[i].name, weight: self.queries[i].weight});
-			queries.seriesArray.push({
-        field: self.queries[i].name,
-        name: self.queries[i].name
-      });
 		}
 		
 		return queries;
@@ -171,7 +167,6 @@ class SearchAggregator extends React.Component {
     
 		let qInfo = self.getQueries();
 		let newState = {
-      chartSeries: qInfo.seriesArray,
       chartData: self.getTopVenues(),
 			queryNames: qInfo.names,
 			queryValues: qInfo.weights
@@ -197,8 +192,8 @@ class SearchAggregator extends React.Component {
 
 				<div className="results">
 				<StackedBarChart
-					chartData = {this.state.chartData}
-					chartSeries = {this.state.chartSeries}
+					data = {this.state.chartData}
+					queries = {this.state.queryNames}
 				/>
 				</div>
 			</div>

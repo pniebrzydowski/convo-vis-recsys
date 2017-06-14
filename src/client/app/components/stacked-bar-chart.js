@@ -11,13 +11,12 @@ class StackedBarChart extends React.Component {
     this.xDomain = [0,100];
     this.xTickFormat = d3.format(".3");
     this.yScale = 'ordinal';
-    this.MAX_RANK = 30;
 		this.margins = {
 			top: 10,
 			right: 20,
 			bottom: 50,
 			left: 130
-		}
+		};
   }
   
   x(d) {
@@ -25,19 +24,38 @@ class StackedBarChart extends React.Component {
   }
   y(d) {
     return d.name;
-  }    
+  }
+
+  getSeries() {
+		let series = [];
+		for(let query of this.props.queries) {
+			series.push({
+				field: query,
+				name: query
+			})
+		}
+
+		return series;
+	}
+
+	getData() {
+		return this.props.data;
+	}
 		
 	render() {
-		if(this.props.chartSeries.length === 0) {
+		if(this.props.queries.length === 0) {
 			return null;
 		}
-		
+
+		let series = this.getSeries();
+		let data = this.getData();
+
 		return (
 			<BarStackHorizontalChart
-				data= {this.props.chartData}
+				data= {data}
 				width= {this.WIDTH}
 				height= {this.HEIGHT}
-				chartSeries = {this.props.chartSeries}
+				chartSeries = {series}
 				x= {this.x}
 				xDomain= {this.xDomain}
 				xTickFormat= {this.xTickFormat}

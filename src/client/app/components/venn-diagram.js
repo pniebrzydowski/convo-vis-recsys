@@ -19,7 +19,7 @@ class VennDiagram extends React.Component {
 		if(nextProps.sets.length === 0 ) return;
 
 		var sets = nextProps.sets;
-		var data = nextProps.chartData;
+		var data = nextProps.data;
 		var totalWt = 0;
 		var queryWts = {};
 		var numQueries = nextProps.queryValues.length;
@@ -42,7 +42,7 @@ class VennDiagram extends React.Component {
 					}
 					size = weightSum * 10 / subsets.length / subsets.length;
 				}
-				set.nodes = set.nodes.reverse().slice(0,10);
+				set.nodes = set.nodes.slice(0,10);
 				return size;
 			});
 		var ld = l.nodes(data);
@@ -140,7 +140,7 @@ class VennDiagram extends React.Component {
 					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 12) + "px");
 			})
 			.each(function(d, i) {
-				if(d.data.name === nextProps.chartData[nextProps.chartData.length - 1].name) {
+				if(d.data.name === nextProps.data[nextProps.data.length - 1].name) {
 					var elm = d3.select(this);
 					div.transition()
 						.duration(500)

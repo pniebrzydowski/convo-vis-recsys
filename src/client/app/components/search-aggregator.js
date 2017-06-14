@@ -1,6 +1,7 @@
 import React from 'react';
 import ValueList from './value-list.js';
 import StackedBarChart from './stacked-bar-chart.js';
+import VennDiagram from './venn-diagram.js';
 import SliderMulti from './slider-multi.js';
 
 class SearchAggregator extends React.Component {
@@ -180,6 +181,13 @@ class SearchAggregator extends React.Component {
     self.setState(newState);
   }
 
+  /*
+	 <StackedBarChart
+	 data = {this.state.chartData}
+	 queries = {this.state.queryNames}
+	 />
+	 */
+
 	render() {
 		return (
 			<div>
@@ -196,10 +204,11 @@ class SearchAggregator extends React.Component {
 				</div>
 
 				<div className="results">
-				<StackedBarChart
-					data = {this.state.chartData}
-					queries = {this.state.queryNames}
-				/>
+					<VennDiagram
+						data = {this.state.chartData}
+						sets = {this.state.queryNames}
+						queryValues = {this.state.queryValues}
+					/>
 				</div>
 			</div>
  		);

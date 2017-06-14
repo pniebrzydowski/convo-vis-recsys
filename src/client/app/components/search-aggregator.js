@@ -200,7 +200,7 @@ class SearchAggregator extends React.Component {
 				<div className="results">
 					<VennDiagram
 						data = {this.state.chartData}
-						sets = {this.state.queryNames}
+						queries = {this.state.queryNames}
 						queryValues = {this.state.queryValues}
 					/>
 				</div>

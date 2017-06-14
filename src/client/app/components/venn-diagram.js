@@ -16,9 +16,9 @@ class VennDiagram extends React.Component {
 	createChart(nextProps) {
 		var self = this;
 
-		if(nextProps.sets.length === 0 ) return;
+		if(nextProps.queries.length === 0 ) return;
 
-		var sets = nextProps.sets;
+		var sets = nextProps.queries;
 		var data = nextProps.data;
 
 		for(let d of data) {

@@ -105,28 +105,7 @@ class SearchAggregator extends React.Component {
 		
 		self.drawChart();
 	}
-	
-	adjustWeightingOnRemove() {
-		var self = this;
 
-		let totalWt = 0;
-		for(let i=0; i<self.queries.length; i++) {
-			totalWt += self.queries[i].weight;
-		}
-		
-		for(let i=0; i<self.queries.length; i++) {
-			self.queries[i].weight *= 600 / totalWt;
-		}
-	}
-		
-	adjustWeightingOnAdd() {
-		var self = this;
-
-		for(let i=0; i<self.queries.length; i++) {
-			self.queries[i].weight *= self.queries.length / (self.queries.length + 1);
-		}
-	}
-	
 	getTopVenues() {
     var self = this;
     

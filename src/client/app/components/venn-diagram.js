@@ -20,6 +20,16 @@ class VennDiagram extends React.Component {
 
 		var sets = nextProps.sets;
 		var data = nextProps.data;
+
+		for(let d of data) {
+			d.set = [];
+			for (let s of sets) {
+				if(d[s]) {
+					d.set.push(s);
+				}
+			}
+		}
+
 		var totalWt = 0;
 		var queryWts = {};
 		var numQueries = nextProps.queryValues.length;

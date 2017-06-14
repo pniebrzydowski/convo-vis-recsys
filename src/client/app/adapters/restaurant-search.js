@@ -1,6 +1,6 @@
 import React from 'react';
 import AggregateForm from './aggregate-form.js';
-import SearchAggregator from './search-aggregator.js';
+import SearchAggregator from '../components/search-aggregator.js';
 import SearchFoursquare from './search-foursquare.js';
 
 class RestaurantSearch extends React.Component {

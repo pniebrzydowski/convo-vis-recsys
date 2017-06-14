@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RestaurantSearch from './components/restaurant-search.js';
+import RestaurantSearch from './adapters/restaurant-search.js';
 
 class App extends React.Component {
   constructor(props) {

@@ -10,7 +10,6 @@ class SearchAggregator extends React.Component {
     
 		this.state = {
 			chartData: [],
-			chartSeries: [],
 			queryNames: [],
 			queryValues: []
 		};
@@ -151,8 +150,7 @@ class SearchAggregator extends React.Component {
 		
 		let queries = {
 			names: [],
-			weights: [],
-			seriesArray: []
+			weights: []
 		};
 		
 		let wt = 0;

@@ -114,11 +114,15 @@ class SearchAggregator extends React.Component {
 		for(let i=0; i<self.queries.length; i++) {
 			totalWeight += self.queries[i].weight;
 		}
-		
+
+
+
 		for(let i=0; i<allVenues.length; i++) {
 			let score = 0;
 			let ranks = allVenues[i].queryRanks;
-			
+			//@TODO remove, handle in VENN component
+			allVenues[i].set = [];
+
 			for(let j=0; j<self.queries.length; j++) {
 				let query = self.queries[j].name;
 				if(!ranks[query]) {
@@ -126,8 +130,9 @@ class SearchAggregator extends React.Component {
 				} else {
 					let queryWeight = self.queries[j].weight / totalWeight;
 					let weightedScore = 100 * queryWeight * ranks[query];
-					//let weightedScore = self.queries[j].weight / 6 * ranks[query];
 					allVenues[i][query] = Math.round(weightedScore);
+					//@TODO remove, handle in VENN component
+					allVenues[i].set.push(query);
 					score += weightedScore;
 				}
 			}
@@ -141,7 +146,7 @@ class SearchAggregator extends React.Component {
       return b.totalScore - a.totalScore;
     });
     
-    return allVenues.slice(0,10).reverse();
+		return allVenues;
   }
 	
 	getQueries() {

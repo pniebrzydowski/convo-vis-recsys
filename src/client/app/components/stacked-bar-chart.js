@@ -39,7 +39,7 @@ class StackedBarChart extends React.Component {
 	}
 
 	getData() {
-		return this.props.data;
+		return this.props.data.slice(0,10).reverse();
 	}
 		
 	render() {

@@ -23,23 +23,23 @@ class SearchAggregator extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		var self = this;
+		let self = this;
 
 		if(self.queries.length >= 4) {
 			alert("Sorry, a maximum of 4 attributes is allowed");
 			return false;
 		}
-		var validQuery = ( self.state.queryNames.indexOf( nextProps.newQuery.query ) === -1);
+		let validQuery = ( self.state.queryNames.indexOf( nextProps.newQuery.query ) === -1);
 		if( !validQuery ) {
 			alert("Sorry, this attribute has already been added. Please try a new one.");
 			return false;
 		}
 
 		let resultCount = 0;
-		for(let i=0; i<self.searches.length; i++) {
-			self.searches[i].getResults(nextProps.newQuery).then(function(result){
+		for(let search of self.searches) {
+			search.getResults(nextProps.newQuery).then(function(result){
 				resultCount++;
-				self.handleResults(result, nextProps.newQuery.query, self.searches[i].idFunction, self.searches[i].nameFunction);
+				self.handleResults(result, nextProps.newQuery.query, search.idFunction, search.nameFunction);
 				if(resultCount === self.searches.length) {
 					self.queries.push({
 						name: nextProps.newQuery.query,
@@ -52,19 +52,19 @@ class SearchAggregator extends React.Component {
 	}
 
 	handleResults(results, query, idFn, nameFn) {
-		var self = this;
+		let self = this;
     		    
-    for(let i=0; i<results.length; i++) {
+    for(let [i,res] of results.entries()) {
       let found = false;
       let dataObj = {
-        id: idFn(results[i]),
-        name: nameFn(results[i]),
+        id: idFn(res),
+        name: nameFn(res),
         queryRanks: {}
       };
       
-      for(let j=0; j<self.resultItems.length; j++) {
-        if(self.resultItems[j].id === idFn(results[i])) {
-          dataObj = self.resultItems[j];
+      for(let item of self.resultItems) {
+        if(item.id === idFn(res)) {
+          dataObj = item;
           found = true;
           break;
         }
@@ -79,56 +79,46 @@ class SearchAggregator extends React.Component {
 	}
   	
   handleQueryRemove(event) {
-    var self = this;
-    
     let idx = -1;
-    for(let i=0; i<self.queries.length; i++) {
-      if(self.queries[i].name === event.target.name) {
+    for(let query of this.queries) {
+      if(query.name === event.target.name) {
         idx = i;
         break;
       }
     }
     if(idx > -1) {
-			self.queries.splice(idx, 1);
+			this.queries.splice(idx, 1);
     }
 		
-		self.drawChart();
+		this.drawChart();
   }
 	
 	handleWeightChange(values) {
-		var self = this;
-		
-		
-		for(let i=0; i<self.queries.length; i++) {
-			self.queries[i].weight = values[i];
+		for(let [index,query] of this.queries.entries()) {
+			query.weight = values[index];
 		}
 		
-		self.drawChart();
+		this.drawChart();
 	}
 
 	getTopVenues() {
-    var self = this;
-    
-		let allVenues = self.resultItems.slice();
+		let allVenues = this.resultItems.slice();
 		let totalWeight = 0;
-		for(let i=0; i<self.queries.length; i++) {
-			totalWeight += self.queries[i].weight;
+		for(let q of this.queries) {
+			totalWeight += q.weight;
 		}
 
-
-
-		for(let i=0; i<allVenues.length; i++) {
+		for(let venue of allVenues) {
 			let score = 0;
-			let ranks = allVenues[i].queryRanks;
+			let ranks = venue.queryRanks;
 
-			for(let j=0; j<self.queries.length; j++) {
-				let query = self.queries[j].name;
-				if(!ranks[query]) {
-					allVenues[i][query] = 0;
+			for(let query of this.queries) {
+				if(!ranks[query.name]) {
+					venue[query.name] = 0;
 				} else {
-					let queryWeight = self.queries[j].weight / totalWeight;
-					let weightedScore = 100 * queryWeight * ranks[query];
-					allVenues[i][query] = Math.round(weightedScore);
+					let queryWeight = query.weight / totalWeight;
+					let weightedScore = 100 * queryWeight * ranks[query.name];
+					venue[query.name] = Math.round(weightedScore);
 					score += weightedScore;
 				}
 			}
@@ -136,7 +126,7 @@ class SearchAggregator extends React.Component {
 			score = Math.round(score);
 			if(score > 100) score = 100;
 
-			allVenues[i].totalScore = score;
+			venue.totalScore = score;
 		}
     allVenues.sort(function(a,b) {
       return b.totalScore - a.totalScore;
@@ -146,39 +136,40 @@ class SearchAggregator extends React.Component {
   }
 	
 	getQueries() {
-		var self = this;
-		
 		let queries = {
 			names: [],
 			weights: []
 		};
 		
 		let wt = 0;
-		for(let i=0; i<self.queries.length; i++) {
-			queries.names.push(self.queries[i].name);
-			queries.weights.push({name: self.queries[i].name, weight: self.queries[i].weight});
+		for(let query of this.queries) {
+			queries.names.push(query.name);
+			queries.weights.push(query);
 		}
 		
 		return queries;
 	}
 	
 	drawChart() {
-    var self = this;
-    
-		let qInfo = self.getQueries();
+		let qInfo = this.getQueries();
 		let newState = {
-      chartData: self.getTopVenues(),
+      chartData: this.getTopVenues(),
 			queryNames: qInfo.names,
 			queryValues: qInfo.weights
     };
 		
-    self.setState(newState);
+    this.setState(newState);
   }
 
   /*
 	 <StackedBarChart
 	 data = {this.state.chartData}
 	 queries = {this.state.queryNames}
+	 />
+	 <VennDiagram
+	 data = {this.state.chartData}
+	 queries = {this.state.queryNames}
+	 queryValues = {this.state.queryValues}
 	 />
 	 */
 

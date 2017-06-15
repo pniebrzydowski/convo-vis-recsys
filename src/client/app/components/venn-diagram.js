@@ -14,12 +14,12 @@ class VennDiagram extends React.Component {
 	}
 
 	createChart(nextProps) {
-		var self = this;
+		let self = this;
 
 		if(nextProps.queries.length === 0 ) return;
 
-		var sets = nextProps.queries;
-		var data = nextProps.data;
+		let sets = nextProps.queries;
+		let data = nextProps.data;
 
 		for(let d of data) {
 			d.set = [];
@@ -30,24 +30,23 @@ class VennDiagram extends React.Component {
 			}
 		}
 
-		var totalWt = 0;
-		var queryWts = {};
-		var numQueries = nextProps.queryValues.length;
-		for(var i=0; i<numQueries; i++) {
-			var q = nextProps.queryValues[i];
+		let totalWt = 0;
+		let queryWts = {};
+		let numQueries = nextProps.queryValues.length;
+		for(let q of nextProps.queryValues) {
 			totalWt += q.weight;
 			queryWts[q.name] = q.weight;
 		}
-		var l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT])
+		let l = self.d3Venn.venn().size([this.WIDTH, this.HEIGHT])
 			.setsSize(function(set) {
-				var size;
+				let size;
 				if(queryWts[set.__key__]) {
 					size = set.size * queryWts[set.__key__] / totalWt;
 				}
 				else {
-					var subsets = set.__key__.split(',');
-					var weightSum = 0;
-					for(var i=0; i<subsets.length; i++) {
+					let subsets = set.__key__.split(',');
+					let weightSum = 0;
+					for(let i=0; i<subsets.length; i++) {
 						weightSum +=  queryWts[sets[i]] / totalWt;
 					}
 					size = weightSum * 10 / subsets.length / subsets.length;
@@ -55,7 +54,7 @@ class VennDiagram extends React.Component {
 				set.nodes = set.nodes.slice(0,10);
 				return size;
 			});
-		var ld = l.nodes(data);
+		let ld = l.nodes(data);
 
 		if(!this.svg) {
 			this.svg = d3.select('svg')
@@ -66,13 +65,13 @@ class VennDiagram extends React.Component {
 		self.svg.selectAll("*").remove();
 		d3.selectAll(".tooltip").remove();
 
-		var nodes = self.svg.selectAll("g")
+		let nodes = self.svg.selectAll("g")
 			.data(l.sets().values(), function (d) {
 				return d.__key__;
 			});
 
 
-		var venn = nodes.enter()
+		let venn = nodes.enter()
 			.append('g')
 			.attr("class", function (d) {
 				return "venn-area venn-" +
@@ -101,21 +100,15 @@ class VennDiagram extends React.Component {
 				return 'none';
 			})
 			.attr('stroke-width', 3);
-/*			.attr('opacity', function(d){
-				if(d.sets.length > 1) {
-					return 0;
-				}
-				return 0.2;
-			})*/
 
-		var points = venn.selectAll("circle.node")
+		let points = venn.selectAll("circle.node")
 			.data(function (d) {
 				return d.nodes;
 			})
 			.enter()
 
 		// Define 'div' for tooltips
-		var div = d3.select("body")
+		let div = d3.select("body")
 			.append("div")
 			.attr("class", "tooltip")
 			.style("opacity", 0);
@@ -138,7 +131,7 @@ class VennDiagram extends React.Component {
 			})
 			.on("click", function(d) {
 				d3.event.stopPropagation();
-				var elm = d3.select(this);
+				let elm = d3.select(this);
 				div.transition()
 					.duration(500)
 					.style("opacity", 0);
@@ -151,7 +144,7 @@ class VennDiagram extends React.Component {
 			})
 			.each(function(d, i) {
 				if(d.data.name === nextProps.data[nextProps.data.length - 1].name) {
-					var elm = d3.select(this);
+					let elm = d3.select(this);
 					div.transition()
 						.duration(500)
 						.style("opacity", 0);
@@ -174,15 +167,13 @@ class VennDiagram extends React.Component {
 	}
 
 	getTooltip(d) {
-		var tooltip =
+		let tooltip =
 			d.data.name + "<br>" +
 			Math.round(d.data.totalScore);
 		return tooltip;
 	}
 
 	componentWillReceiveProps(nextProps) {
-		var self = this;
-
 		this.createChart(nextProps);
 	}
 

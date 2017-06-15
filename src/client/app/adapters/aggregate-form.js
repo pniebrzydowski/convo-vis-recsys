@@ -9,7 +9,7 @@ class AggregateForm extends React.Component {
     this.state = {
       query: null,
       loc: null
-		}
+		};
 	
 		this.handleSubmit = this.handleSubmit.bind(this);
     this.handleQueryChange = this.handleQueryChange.bind(this);
@@ -17,10 +17,9 @@ class AggregateForm extends React.Component {
   }
 	
 	handleSubmit(event) {
-		var self = this;
-		self.formSubmitted = true;
+		this.formSubmitted = true;
 		event.preventDefault();
-		self.addQuery(self.state.query,self.state.loc);
+		this.addQuery(this.state.query,this.state.loc);
 	}
 
 	handleQueryChange(event) {

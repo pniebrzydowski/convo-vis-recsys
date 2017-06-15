@@ -9,14 +9,12 @@ class SearchFoursquare {
   }
 	
 	getResults(newQuery) {
-		var self = this;
-
 		let params = {
 		  "near": newQuery.loc,
 		  "query": newQuery.query
 		};
 
-		return self.foursquare.venues.explore(params)
+		return this.foursquare.venues.explore(params)
 			.then(function (data) {
 				console.log(data);
 				return data.response.groups[0].items;

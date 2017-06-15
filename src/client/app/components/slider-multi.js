@@ -7,19 +7,17 @@ class SliderMulti extends React.Component {
 	}
 
 	render() {
-		var self = this;
-
+		let self = this;
 		if (this.props.values.length <= 1) {
 			return null;
 		}
 
-		var weightChange = function weightChange(value) {
-			var name = this.name;
-			var vals = [];
+		let weightChange = function weightChange(value) {
+			let vals = [];
 
-			for(var i=0; i<self.props.values.length; i++) {
-				if(self.props.values[i].name === name) vals.push(value);
-				else vals.push(self.props.values[i].weight);
+			for(let val of self.props.values) {
+				if(val.name === this.name) vals.push(value);
+				else vals.push(val.weight);
 			}
 			self.props.handleWeightChange(vals);
 		};

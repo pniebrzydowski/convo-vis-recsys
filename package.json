@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "buildp": "webpack -p",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "d3": "^4.7.3",
+    "express": "^4.15.3",
     "react": "^15.4.2",
     "react-d3-basic": "^1.6.11",
     "react-dom": "^15.4.2",

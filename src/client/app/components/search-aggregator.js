@@ -80,7 +80,7 @@ class SearchAggregator extends React.Component {
   	
   handleQueryRemove(event) {
     let idx = -1;
-    for(let query of this.queries) {
+    for(let [i,query] of this.queries.entries()) {
       if(query.name === event.target.name) {
         idx = i;
         break;

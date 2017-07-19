@@ -146,9 +146,6 @@ class VennDiagram extends React.Component {
 				if(d.data.name === nextProps.data[0].name) {
 					let elm = d3.select(this);
 					div.transition()
-						.duration(500)
-						.style("opacity", 0);
-					div.transition()
 						.duration(200)
 						.style("opacity", .9);
 					div.html(self.getTooltip(d))
@@ -157,6 +154,10 @@ class VennDiagram extends React.Component {
 				}
 			});
 		;
+
+		d3.select(".weight-sliders").on("click", function() {
+			d3.event.stopPropagation();
+		});
 
 		d3.select("body").on("click", function(d) {
 			d3.selectAll(".tooltip")

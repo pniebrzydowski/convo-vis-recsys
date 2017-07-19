@@ -143,7 +143,7 @@ class VennDiagram extends React.Component {
 					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 12) + "px");
 			})
 			.each(function(d, i) {
-				if(d.data.name === nextProps.data[nextProps.data.length - 1].name) {
+				if(d.data.name === nextProps.data[0].name) {
 					let elm = d3.select(this);
 					div.transition()
 						.duration(500)
@@ -176,7 +176,6 @@ class VennDiagram extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		this.createChart(nextProps);
 	}
-
 
 	render() {
 		return (

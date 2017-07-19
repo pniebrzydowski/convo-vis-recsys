@@ -17,9 +17,15 @@ class SearchAggregator extends React.Component {
 		this.queries = [];
 		this.resultItems = [];
 		this.searches = props.searches;
-		
+		this.ui = this.getParameterByName('v') || 'vdc';
+
 		this.handleQueryRemove = this.handleQueryRemove.bind(this);
 		this.handleWeightChange = this.handleWeightChange.bind(this);
+	}
+
+	getParameterByName(name) {
+		let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+		return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -161,18 +167,6 @@ class SearchAggregator extends React.Component {
     this.setState(newState);
   }
 
-  /*
-	 <StackedBarChart
-	 data = {this.state.chartData}
-	 queries = {this.state.queryNames}
-	 />
-	 <VennDiagram
-	 data = {this.state.chartData}
-	 queries = {this.state.queryNames}
-	 queryValues = {this.state.queryValues}
-	 />
-	 */
-
 	render() {
 		return (
 			<div>
@@ -189,11 +183,21 @@ class SearchAggregator extends React.Component {
 				</div>
 
 				<div className="results">
-					<VennDiagram
-						data = {this.state.chartData}
-						queries = {this.state.queryNames}
-						queryValues = {this.state.queryValues}
-					/>
+					{
+						this.ui === 'vdc' &&
+						<VennDiagram
+							data={this.state.chartData}
+							queries={this.state.queryNames}
+							queryValues={this.state.queryValues}
+						/>
+					}
+					{
+						this.ui === 'sbc' &&
+						<StackedBarChart
+							data = {this.state.chartData}
+							queries = {this.state.queryNames}
+						/>
+					}
 				</div>
 			</div>
  		);

@@ -143,7 +143,7 @@ class VennDiagram extends React.Component {
 					.style("top", (parseFloat(elm.attr("cy")) + parseFloat(elm.attr("r")) + 12) + "px");
 			})
 			.each(function(d, i) {
-				if(d.data.name === nextProps.data[0].name) {
+				if(d.data.name === nextProps.data[0].name && d.data.totalScore === nextProps.data[0].totalScore) {
 					let elm = d3.select(this);
 					div.transition()
 						.duration(200)

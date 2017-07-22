@@ -4,7 +4,7 @@ const ValueList = (props) => (
   <ul>
     {props.values.map(function(val) {
       return (
-        <li key={val} id={val}>
+        <li key={val} id={"_" + val}>
           <span className="legend-icon"></span>
           <a
             name={val}

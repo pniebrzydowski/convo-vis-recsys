@@ -82,7 +82,7 @@ class VennDiagram extends React.Component {
 			})
 			.each(function(d, i) {
 				if(d.sets.length === 1) {
-					d3.select("#"+d.sets[0]+" .legend-icon").style("background-color", self.colors(i));
+					d3.select("#_"+d.sets[0]+" .legend-icon").style("background-color", self.colors(i));
 				}
 			});
 

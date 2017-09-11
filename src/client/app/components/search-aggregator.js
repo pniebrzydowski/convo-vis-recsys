@@ -29,37 +29,33 @@ class SearchAggregator extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		let self = this;
-
-		if(self.queries.length >= 4) {
+		if(this.queries.length >= 4) {
 			alert("Sorry, a maximum of 4 attributes is allowed");
 			return false;
 		}
-		let validQuery = ( self.state.queryNames.indexOf( nextProps.newQuery.query ) === -1);
+		let validQuery = ( this.state.queryNames.indexOf( nextProps.newQuery.query ) === -1);
 		if( !validQuery ) {
 			alert("Sorry, this attribute has already been added. Please try a new one.");
 			return false;
 		}
 
 		let resultCount = 0;
-		for(let search of self.searches) {
-			search.getResults(nextProps.newQuery).then(function(result){
+		for(let search of this.searches) {
+			search.getResults(nextProps.newQuery).then((result) => {
 				resultCount++;
-				self.handleResults(result, nextProps.newQuery.query, search.idFunction, search.nameFunction);
-				if(resultCount === self.searches.length) {
-					self.queries.push({
+				this.handleResults(result, nextProps.newQuery.query, search.idFunction, search.nameFunction);
+				if(resultCount === this.searches.length) {
+					this.queries.push({
 						name: nextProps.newQuery.query,
 						weight: 5
 					});
-					self.drawChart();
+					this.drawChart();
 				}
 			});
 		}
 	}
 
 	handleResults(results, query, idFn, nameFn) {
-		let self = this;
-    		    
     for(let [i,res] of results.entries()) {
       let found = false;
       let dataObj = {
@@ -68,7 +64,7 @@ class SearchAggregator extends React.Component {
         queryRanks: {}
       };
       
-      for(let item of self.resultItems) {
+      for(let item of this.resultItems) {
         if(item.id === idFn(res)) {
           dataObj = item;
           found = true;
@@ -79,7 +75,7 @@ class SearchAggregator extends React.Component {
       dataObj.queryRanks[query] = (results.length - i)/(results.length);
 
       if(!found) {
-        self.resultItems.push(dataObj);
+        this.resultItems.push(dataObj);
       }
     }
 	}
